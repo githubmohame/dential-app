@@ -6,7 +6,15 @@ class UserRepos{
         this.next=next;
         this.User=User;
     }
-    getUserByEmail(email){
+    async getUserByEmail(email){
+        let res=this.User.find({email: email});
+        if(res){
+            return {error:0,res:res};
+            //return ;
+        }
+        return {error:1,msgErr:"the user not found"};
+    }
+   async getUserById(id){
         let res=this.User.findById(id);
         if(res){
             return {error:0,res:res};
@@ -14,22 +22,14 @@ class UserRepos{
         }
         return {error:1,msgErr:"the user not found"};
     }
-    getUserById(id){
-        let res=this.User.findById(id);
-        if(res){
-            return {error:0,res:res};
-            //return ;
-        }
-        return {error:1,msgErr:"the user not found"};
-    }
-    deleteUser(id){
-        let res=this.User.deleteOne({_id:id});
+   async deleteUser(email){
+        let res=this.User.deleteOne({email:email});
         if(res.deletedCount==0){
             return {error:0,"res": "User not found"}
         }
         return {error:1,"msgErr":"the user deleted"}
     }
-      addUser(email,password,name ,phone){
+      async addUser(email,password,name ,phone){
       
             let user=new this.User({email:email,password:password,name:name,phone:phone});
           let err=   user.validateSync();
@@ -40,10 +40,11 @@ class UserRepos{
            this.next(err1);
            return;
           }
+          user.save();
         return {error:0,"res":"the user created"}
     }
-    updateUser(id,map1){
-        this.User.updateOne({_id:id},{...map1});
+   async updateUser(email,map1){
+        await this.User.updateOne({email:email},{...map1});
         return {error:0,"res":"the user update"}
     }
 }

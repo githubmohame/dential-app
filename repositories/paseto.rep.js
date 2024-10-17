@@ -1,4 +1,4 @@
-import { V4 } from "paseto";
+
 class PasetoRepos{
     constructor(userPaseto=null,token=null,id=null){
         this.id=id;
@@ -10,6 +10,7 @@ class PasetoRepos{
        if(count){
         return null;
        }
+       
        await this.userPaseto.create({user:this.id,privateKey:privateKey,paseto:this.token});
        return {"msg":"create token"};
     }
