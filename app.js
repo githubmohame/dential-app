@@ -10,9 +10,6 @@ import UserController from "./controllers/user.controller.js";
 import UserRouterFun from "./routes/user_routes/user_routes.js";
 import mongoose from "mongoose";
 import logger from "./logger.js";
-import connectDb from "./config/dbConnection.js";
-const dovenv = require("dotenv").config();
-// connectDb()
 mongoose
   .connect("mongodb://localhost/dentalDatabase", {})
   .then(() => {
