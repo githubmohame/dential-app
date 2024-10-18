@@ -25,7 +25,7 @@ mongoose
     app.use("/", adminRouter);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
-      logger.error(err.message); // Log the error message
+      logger.error(err.message);
       res.status(err.res.status);
       res.send({ error: err.res.msgUser });
       //res.send({error:""});
@@ -33,10 +33,10 @@ mongoose
     app.use(errorHandler);
     app.listen(3000, () => {
       console.log("tell me go");
-      logger.info("Server is running on port 3000"); // Use logger here
+      logger.info("Server is running on port 3000");
     });
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
-    logger.error("Error connecting to MongoDB:", error); // Log connection errors
+    logger.error("Error connecting to MongoDB:", error);
   });
