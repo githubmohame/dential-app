@@ -1,4 +1,5 @@
 import { Schema ,model} from "mongoose";
+import ErrorCustome from "../utilities/error.js";
 //
 const AdminSchema=Schema({
     name:{
@@ -16,6 +17,7 @@ const AdminSchema=Schema({
         },
     },
     phone: {
+      unique: true,
         type: String,
         validate: {
           validator: function(v) {
@@ -36,7 +38,37 @@ const AdminSchema=Schema({
                 return "it is not a valid number";
               }
         }
-    }
+    },
+    password:{
+      type:String,
+      required:true,
+  }
+});
+let Admin=model("Admins",AdminSchema)
+AdminSchema.pre("save",async function(next){
+  let u=await Admin.find({email:this.email});
+  if(u.length){
+    let err1=new Error();
+   err1.res=ErrorCustome("this email is already used");
+    next(err1);
+  }
+  u=await Admin.find({phone:this.phone});
+  if(u.length){
+    let err1=new Error();
+    err1=err1.res=ErrorCustome("this phone is already used");
+    next(err1);
+  }
+  try {
+    const salt = await genSalt(10);
+    let hashedPassword = await hash(this.password, salt);
+    this.password = hashedPassword;
+          } catch (error) {
+    return next(Error(new ErrorClass("user message error","admin message error",500)));
+  }
+  new Error({});
+
 });
 
-export default Admin=model("Admins",AdminSchema);
+
+export default Admin;
+let i=new Admin();

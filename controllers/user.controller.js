@@ -1,26 +1,34 @@
+import ErrorCustome from "../utilities/error.js";
+
 class UserController{
    constructor(next,userRepos,user){
       this.next = next;
       this.userRepos = userRepos;
       this.user = user;
    }
-   getUser(email){
-      new this.userRepos(this.user,this.next).getUserByEmail(email);
+   async getUserByEmail(email){
+    return  await new this.userRepos(this.user,this.next).getUserByEmail(email);
+     console.log(this.user);
+  }
+   async getUserById(id){
+     return  await new this.userRepos(this.user,this.next).getUserById(id);
+     
    }
-    createUser(email,password,name ,phone){
-
+    async createUser(email,password,name ,phone){
      try{
-       new this.userRepos(this.user,this.next).addUser(email,password,name ,phone);
-       res.send({"msg":"user add"})
+       return await new this.userRepos(this.user,this.next).addUser(email,password,name ,phone);
+      
      }
      catch(e){
+      console.log(e.message);
    }
     }
-    deleteUser(email){
+    async deleteUser(email){
       new this.userRepos(this.user,this.next).deleteUser(email);;
     }
-    updateUser(email,req){
-      new this.userRepos(this.user,this.next). updateUser(email,req.body);
+    async updateUser(email,map){
+     return await new this.userRepos(this.user,this.next). updateUser(email,map);
+      
     }
 
 }

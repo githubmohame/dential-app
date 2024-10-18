@@ -1,13 +1,13 @@
 import {Schema,model} from "mongoose";
 import {genSalt,hash} from "bcrypt";
-import ErrorClass from "../utilities/error.js";
+import ErrorCustome from "../utilities/error.js";
 const UserSchema=Schema({
     name:{
         tell:[],
-        unique: true,
+        unique: false,
         type:[String,"you should send string"],
         required:[true,"you should send name"],
-        minLength: [3, 'Must be at least 6, got {VALUE}'],
+        minLength: [3, 'Must be at least 3, got {VALUE}'],
         maxLength: [50,"the name is too long"],
         validate:{
             validator: function(v) {
@@ -31,7 +31,7 @@ const UserSchema=Schema({
         required: [true, 'User phone number required']
       },
     email:{
-        unique: true,
+        unique: [true,"this email is already used"],
         type:[String,"the email not valid"],
         required:[true,"You should send email"],
         validate:{
@@ -39,7 +39,7 @@ const UserSchema=Schema({
                 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
               },
               message:function(prop){
-                return "it is not a valid number";
+                return "it is not a valid email";
               }
         }
     },
@@ -49,13 +49,32 @@ const UserSchema=Schema({
     }
 });
 UserSchema.pre("save",async function(next){
-  
+  let u=await User.find({email:this.email});
+  if(u.length){
+    let err1=new Error();
+    err1.res=new ErrorCustome("this email is already used","admin message",500);
+    next(err1);
+  }
+  u=await User.find({phone:this.phone});
+  if(u.length){
+    let err1=new Error();
+   err1.res=new ErrorCustome("this phone is already used","admin message",500);
+    next(err1);
+  }
+  try {
+    const salt = await genSalt(10);
+    let hashedPassword = await hash(this.password, salt);
+    this.password = hashedPassword;
+          } catch (error) {
+    return next(Error(new ErrorClass("user message error","admin message error",300)));
+  }
       try {
         const salt = await genSalt(10);
         let hashedPassword = await hash(this.password, salt);
         this.password = hashedPassword;
               } catch (error) {
-        return next(Error(new ErrorClass("user message error","admin message error",500)));
+                console.log(error.res)
+        return next(Error(new ErrorClass("user message error","admin message error",300)));
       }
       new Error({});
 

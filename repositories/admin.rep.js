@@ -1,3 +1,5 @@
+import ErrorCustome from "../utilities/error.js";
+
 class AdminRepos{
     constructor(Admin,next){
         this.next=next;
@@ -9,27 +11,45 @@ class AdminRepos{
             return {error:0,res:res};
             //return ;
         }
-        return {error:1,msgErr:"the user not found"};
+        let err1=new Error();
+        err1.res=ErrorCustome("the admin not found","admin.repos",200);
+        this.next(err1);
+        return;
     }
     async  getAdminById(id){
-        let res=this.Admin.findById(id);
+        let res=await this.Admin.findById(id);
         if(res){
             return {error:0,res:res};
             //return ;
         }
-        return {error:1,msgErr:"the user not found"};
+        let err1=new Error();
+        err1.res=ErrorCustome("the admin not found","admin.repos",200);
+        this.next(err1);
+        return ;
     }
-    async deleteAdmin(id){
-        let res=this.Admin.deleteOne({_id:id});
+    async deleteAdmin(email){
+        let res=await this.Admin.deleteOne({email:email});
         if(res.deletedCount==0){
-            return {error:0,"res": "User not found"}
+            let err1=new Error( );
+            err1.res=new ErrorCustome("admin not found","admin",400)
+            this.next(err1);
+            return ;
         }
-        return {error:1,"msgErr":"the user deleted"}
+        return {error:1,"msgErr":"the admin deleted"}
     }
     async  addAdmin(email,password,name ,phone){
-      
-            let user=new this.Admin({email:email,password:password,name:name,phone:phone});
-          let err=   user.validateSync();
+        let count=await this.Admin.find({email:email,phone:phone});
+        if(count.length){
+            console.log("drop delete");
+            let err1=new Error( );
+            err1.res=new ErrorCustome("this email or phone used","admin",200)
+            await this.next(err1);
+            return;
+        }
+            let admin=await new this.Admin({email:email,password:password,name:name,phone:phone});
+          
+          let err=   admin.validateSync();
+          console.log("tell me");``
           if(err!=null){
            let message=getErrorSchema(err);
            let err1=new Error( );
@@ -37,11 +57,18 @@ class AdminRepos{
            this.next(err1);
            return;
           }
-        return {error:0,"res":"the user created"}
+        return {error:0,"res":"the admin created"}
     }
-    async  updateAdmin(id,map1){
-        this.Admin.updateOne({_id:id},{...map1});
-        return {error:0,"res":"the user update"}
+    async  updateAdmin(email,map1){
+        let err=await this.Admin.updateOne({email:email},map1,{ runValidators: true });
+        if(err!=null){
+         let message=getErrorSchema(err);
+         let err1=new Error( );
+         err1.res=new ErrorCustome(message,"admin",200)
+         await this.next(err1);
+         return;
+        }
+        return {error:0,"res":"the admin update"}
     }
 }
 

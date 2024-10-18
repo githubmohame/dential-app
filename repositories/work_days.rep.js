@@ -17,16 +17,16 @@ class WorkDaysRepo{
             workDays.save();
         return {error:0,"res":"the time add"}
     }
-    async getWorkDay(adminId,){
-        let records=await this.workDays.find({admin:adminId});
+    async getWorkDay(workDaysId,){
+        let records=await this.workDays.find({__id:workDaysId});
         return records;
     }
     async deleteWorkDay(workDaysId){
-        let records=await this.workDays.delete({admin:adminId});
+        let records=await this.workDays.delete({__id:workDaysId});
         return records;
     }
     async updateWorkDay(workDaysId,map){
-        let records=await this.workDays.update({admin:adminId},map);
+        let records=await this.workDays.update({__id:workDaysId},map);
         return records;
     }
 }

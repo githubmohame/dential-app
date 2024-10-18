@@ -1,30 +1,48 @@
 import { Router } from "express";
-import UserController from "../../controllers/user.controller.js";
 
 //import User from "../../models/user.model.js";
 function UserRouterFun(User,UserController,userRepos){
     const UserRouter=Router();
+    
     UserRouter.get("/user",async function(req,res,next){
-        new UserController(next,userRepos,User).createUser(req.email);
+        try{
+         let u;
+         if(req.headers.id){
+            u=await new UserController(next,userRepos,User).getUserById(req.headers.id);
+         }
+         else{
+            u=await new UserController(next,userRepos,User).getUserByEmail(req.headers.email);
+         }
+         console.log(u)
+         console.log("go to poll");
+         
+         res.send(u);
+        }
+        catch(e){
+         console.log(e.message);
+        }
      });
      
-     UserRouter.post("/user",function(req,res,next){
-        //email,password,name ,phone
-        new UserController(next,userRepos,User).createUser(req.email,req.password,req.name,req.phone);
-        try{
+     UserRouter.post("/user",async function(req,res,next){
+        let result=await new UserController(next,userRepos,User).createUser(req.body.email,req.body.password,req.body.name,req.body.phone);
+        if(result){
          res.send({"tell":"iii"});
         }
-        catch(err){
-     
-        }
-     
+      
      });
-     UserRouter.put("/user",function(res,req){
-     
+     UserRouter.delete("/user",function(req,res,next){
+      let result=new UserController(next,userRepos,User).deleteUser(req.headers.email);
+      if(result){
+         res.send({"res":"done"})
+      }
      });
      
-     UserRouter.delete("/user",function(res,req){
-     
+     UserRouter.put("/user",async function(req,res,next){
+      let result=await new UserController(next,userRepos,User).updateUser(req.body.email,req.body,)
+     if(result){      
+      res.send({"res":"done"});
+     }
+    
      });
      return UserRouter;
 }

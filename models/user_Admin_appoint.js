@@ -1,5 +1,6 @@
 import { Schema,model } from "mongoose";
-const AdminsUsersAppointsSchema=Schema({
+import ErrorCustome from "../utilities/error";
+const UserAdminsAppointsSchema=Schema({
     adminService: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AdminsServices'
@@ -13,7 +14,7 @@ const AdminsUsersAppointsSchema=Schema({
         validate: {
             validator: function(v) {
              let diffDate=v-Date.now();
-             if(diffDate>0){
+             if(diffDate.getUTCDate()>1){
                 return true;
              }
              else{
@@ -26,5 +27,15 @@ const AdminsUsersAppointsSchema=Schema({
           },
     }
 });
-const AdminsUsersAppoints=model("AdminsUsersAppoints",AdminsUsersAppointsSchema);
+submissionSchema.index({ date: 1, adminService: 1 }, { unique: true });
+UserAdminsAppointsSchema.post('save', function(error, doc, next) {
+  if (error.name === 'MongoError' && error.code === 11000) {
+    let err=new Error();
+    err.res=ErrorCustome('this appointment is full',"AdminUserAppointmentSchema",500)
+    next(new Error());
+  } else {
+    next(error);
+  }
+});
+const AdminsUsersAppoints=model("AdminsUsersAppoints",UserAdminsAppointsSchema);
 export default AdminsUsersAppoints;

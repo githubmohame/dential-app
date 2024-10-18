@@ -4,7 +4,7 @@ class AdminController{
        this.adminRepos = adminRepos;
        this.admin = admin;
     }
-     createAdmin(email,password,name ,phone){
+     async createAdmin(email,password,name ,phone){
  
       try{
         new this.adminRepos(this.admin,this.next).addAdmin(email,password,name ,phone);
@@ -13,13 +13,13 @@ class AdminController{
       catch(e){
       }
      }
-     getAdmin(email){
+     async getAdmin(email){
       new this.adminRepos(this.user,this.next).getAdminByEmail(email);
    }
-   deleteAdmin(email){
+  async deleteAdmin(email){
     new this.adminRepos(this.user,this.next).deleteAdmin(email);
   }
-  updateAdmin(email,req){
+  async updateAdmin(email,req){
     new this.adminRepos(this.user,this.next). updateUser(email,req.body);
   }
  }

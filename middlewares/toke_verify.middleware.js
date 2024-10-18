@@ -1,7 +1,7 @@
 import { decreptPaseto } from "../utilities/pasoto_utilities";
 import ErrorCustome from "../utilities/error";
-export function CustomePasetoMiddleWare(req,res,next,pasetoRepos){
-  let doc1=pasetoRepos.getPasetoUser();
+export async function CustomePasetoMiddleWare(req,res,next,pasetoRepos){
+  let doc1=await pasetoRepos.getPasetoUser();
   try{
     msg=decreptPaseto(req.headers["token"],doc1.privateKey);
     req.user_type=msg.type;

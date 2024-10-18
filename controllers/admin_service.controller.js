@@ -8,7 +8,7 @@ class AdminsServicesController{
     async getAdminsServices(adminId){
        new this.adminServiceRepos(this.adminService,this.next).getAdminsServices(id);
     }
-    addAdminService(adminId,serviceId,cost,star){
+   async addAdminService(adminId,serviceId,cost,star){
  
       try{
         new this.adminServiceRepos(this.adminService,this.next).addAdminService(adminId,serviceId,cost,star,this.adminModel);
@@ -17,10 +17,10 @@ class AdminsServicesController{
       catch(e){
       }
      }
-     deleteAdminsService(adminId,serviceId){
-        new this.adminServiceRepos(this.adminService,this.next). deleteAdminService(adminId,map1,serviceId);
+     async deleteAdminsService(adminId,serviceId){
+        new this.adminServiceRepos(this.adminService,this.next). deleteAdminService(id);
      }
-     updateAdminService(adminId,map1,serviceId){
+    async updateAdminService(adminId,map1,serviceId){
        new this.adminServiceRepos(this.adminService,this.next). updateAdminService(adminId,map1,serviceId);
      }
  

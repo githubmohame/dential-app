@@ -11,7 +11,7 @@ class AdminsServicesRepos{
         let services=await this.adminsServices.find({admin:adminId});
         return {services:services};
     }
-   async addAdminService(adminId,serviceId,cost,star,adminModel){
+   async addAdminService(adminId,serviceId,cost,adminModel){
         if(!(await checkEntity(adminModel,"_id",adminId))){
           let err1=new Error( );
          err1.res=new ErrorCustome("he is not an admin","admin",400)
@@ -26,7 +26,7 @@ class AdminsServicesRepos{
             next(err);
             return;
         }
-        let adminService=new this.adminsServices.insert({admin:adminId,service:serviceId,cost:cost});
+        let adminService=new this.adminsServices({admin:adminId,service:serviceId,cost:cost});
         let err=   adminService.validateSync();
         if(err!=null){
          let message=getErrorSchema(err);
@@ -35,10 +35,11 @@ class AdminsServicesRepos{
          this.next(err1);
          return;
        }
+       adminService.save();
        return {error:0,"res":"add service to admin"}
     }
-    async deleteAdminService(adminId,serviceId){
-      let u=await this.addAdminService.deleteOne({admin:adminId,service:serviceId});
+    async deleteAdminService(id){
+      let u=await this.addAdminService.deleteOne({__id:id});
       if(!u){
         let err1=new Error( );
         err1.res=new ErrorCustome("there is no service for that user","admin",400)
@@ -47,7 +48,7 @@ class AdminsServicesRepos{
       }
     }
    async updateAdminService(adminId,map1,serviceId){
-        this.addAdminService.updateOne({admin:adminId,service:serviceId},{...map1});
+        await this.addAdminService.updateOne({admin:adminId,service:serviceId},{...map1});
         return {error:0,"res":"the user update"}
     }
 }

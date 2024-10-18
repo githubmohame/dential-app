@@ -1,12 +1,12 @@
 import ErrorCustome from "../utilities/error";
 
-export function BasicAuthMiddleware(req,res,next,userRepos,adminRepos){
+export async function BasicAuthMiddleware(req,res,next,userRepos,adminRepos){
     if(req.headers["email"]&&req.headers["password"]){
-        let user1=userRepos.getUserByEmail(req.headers["email"]);
+        let user1=await userRepos.getUserByEmail(req.headers["email"]);
         req.usertype="user";
         let user2=null;
         if(!user1){
-            user2=adminRepos.getAdminByEmail(req.headers["email"]);
+            user2=await adminRepos.getAdminByEmail(req.headers["email"]);
             req.usertype="admin";
         }
         if(!(user1||user2)){
