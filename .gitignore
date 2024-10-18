@@ -1,5 +1,4 @@
 graphql_t.py
 test.js
 node_modules/
-combined.log
-error.log
+logs/
