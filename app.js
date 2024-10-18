@@ -40,4 +40,3 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
     logger.error("Error connecting to MongoDB:", error); // Log connection errors
   });
-sfsf;
