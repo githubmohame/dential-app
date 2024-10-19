@@ -10,8 +10,10 @@ import UserController from "./controllers/user.controller.js";
 import UserRouterFun from "./routes/user_routes/user_routes.js";
 import mongoose from "mongoose";
 import logger from "./logger.js";
+import dotenv from "dotenv";
+dotenv.config();
 mongoose
-  .connect("mongodb://localhost/dentalDatabase", {})
+  .connect(process.env.CONNECTION_STRING, {})
   .then(() => {
     console.log("Connected to MongoDB");
     logger.info("Connected to MongoDB");
