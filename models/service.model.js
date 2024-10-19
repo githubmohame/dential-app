@@ -1,4 +1,6 @@
+import { MaxKey } from "mongodb";
 import Schema, { model } from "mongoose";
+import { validate } from "uuid";
 
 const ServiceSchema = Schema({
   name: {
@@ -12,6 +14,9 @@ const ServiceSchema = Schema({
         return "it is not a valid name";
       },
     },
+  },
+  cost: {
+    type: Number,
   },
 });
 
