@@ -22,6 +22,7 @@ function AdminRouterFun(admin,adminController,adminRepos){
     });
     
     AdminRouter.post("/admin",async function(req,res,next){
+      console.log("loooooooooooooooo")
        let result=await new adminController(next,adminRepos,admin).createAdmin(req.body.email,req.body.password,req.body.name,req.body.phone);
        if(result){
         res.send({"tell":"iii"});
@@ -30,13 +31,15 @@ function AdminRouterFun(admin,adminController,adminRepos){
     });
     AdminRouter.delete("/admin",function(req,res,next){
      let result=new adminController(next,adminRepos,admin).deleteAdmin(req.headers.email);
+    
      if(result){
         res.send({"res":"done"})
      }
     });
     
     AdminRouter.put("/admin",async function(req,res,next){
-     let result=await new adminController(next,adminRepos,admin).updateAdmin(req.body.email,req.body,)
+      console.log(req.body.email)
+     let result=await new adminController(next,adminRepos,admin).updateAdmin(req.headers.email,req.body,)
     if(result){      
      res.send({"res":"done"});
     }

@@ -38,7 +38,7 @@ function UserRouterFun(User,UserController,userRepos){
      });
      
      UserRouter.put("/user",async function(req,res,next){
-      let result=await new UserController(next,userRepos,User).updateUser(req.body.email,req.body,)
+      let result=await new UserController(next,userRepos,User).updateUser(req.headers.email,req.body,)
      if(result){      
       res.send({"res":"done"});
      }

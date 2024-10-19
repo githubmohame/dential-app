@@ -7,20 +7,22 @@ class AdminController{
      async createAdmin(email,password,name ,phone){
  
       try{
-        new this.adminRepos(this.admin,this.next).addAdmin(email,password,name ,phone);
-        res.send({msg:"admin created"})
+       return await new this.adminRepos(this.admin,this.next).addAdmin(email,password,name ,phone);
       }
       catch(e){
       }
      }
-     async getAdmin(email){
-      new this.adminRepos(this.user,this.next).getAdminByEmail(email);
+     async getAdminById(id){
+     return await new this.adminRepos(this.admin,this.next).getAdminById(id);
+   }
+     async getAdminByEmail(email){
+      return await  new this.adminRepos(this.admin,this.next).getAdminByEmail(email);
    }
   async deleteAdmin(email){
-    new this.adminRepos(this.user,this.next).deleteAdmin(email);
+    return await  new this.adminRepos(this.admin,this.next).deleteAdmin(email);
   }
-  async updateAdmin(email,req){
-    new this.adminRepos(this.user,this.next). updateUser(email,req.body);
+  async updateAdmin(email,map1){
+    return await new this.adminRepos(this.admin,this.next). updateAdmin(email,map1);
   }
  }
  export default AdminController;

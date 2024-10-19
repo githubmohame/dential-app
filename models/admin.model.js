@@ -44,31 +44,36 @@ const AdminSchema=Schema({
       required:true,
   }
 });
-let Admin=model("Admins",AdminSchema)
 AdminSchema.pre("save",async function(next){
+  console.log(";;;;yuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu;;;;;;;;")
   let u=await Admin.find({email:this.email});
   if(u.length){
     let err1=new Error();
-   err1.res=ErrorCustome("this email is already used");
+   err1.res=new ErrorCustome("this email is already used","",200);
     next(err1);
+    return;
   }
   u=await Admin.find({phone:this.phone});
+
   if(u.length){
+    
     let err1=new Error();
-    err1=err1.res=ErrorCustome("this phone is already used");
+   err1.res=new ErrorCustome("this phone is already used","",200);
     next(err1);
+    return;
   }
   try {
     const salt = await genSalt(10);
     let hashedPassword = await hash(this.password, salt);
     this.password = hashedPassword;
           } catch (error) {
-    return next(Error(new ErrorClass("user message error","admin message error",500)));
+            let err1=new Error();
+            err1.res=new ErrorClass("user message error","admin message error",500)
+    return next(err1);
   }
-  new Error({});
 
 });
 
-
+let Admin=model("Admins",AdminSchema)
 export default Admin;
-let i=new Admin();
+ 

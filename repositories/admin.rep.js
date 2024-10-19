@@ -1,12 +1,12 @@
 import ErrorCustome from "../utilities/error.js";
-
+import getErrorSchema from "../utilities/get_errors_schema.js";
 class AdminRepos{
     constructor(Admin,next){
         this.next=next;
         this.Admin=Admin;
     }
     async getAdminByEmail(email){
-        let res=this.Admin.find({ email: email});
+        let res=await this.Admin.find({ email: email});
         if(res){
             return {error:0,res:res};
             //return ;
@@ -38,14 +38,7 @@ class AdminRepos{
         return {error:1,"msgErr":"the admin deleted"}
     }
     async  addAdmin(email,password,name ,phone){
-        let count=await this.Admin.find({email:email,phone:phone});
-        if(count.length){
-            console.log("drop delete");
-            let err1=new Error( );
-            err1.res=new ErrorCustome("this email or phone used","admin",200)
-            await this.next(err1);
-            return;
-        }
+        
             let admin=await new this.Admin({email:email,password:password,name:name,phone:phone});
           
           let err=   admin.validateSync();
@@ -57,11 +50,24 @@ class AdminRepos{
            this.next(err1);
            return;
           }
+          try{
+            await  admin.save();
+             console.log("kkiuui");
+          }
+          catch(e){
+             console.log(e);
+             this.next(e);
+             return;
+          }
         return {error:0,"res":"the admin created"}
     }
     async  updateAdmin(email,map1){
+        let t=await this.Admin.find({email:email});
+        console.log(t);
         let err=await this.Admin.updateOne({email:email},map1,{ runValidators: true });
-        if(err!=null){
+        //console.log(err);
+        if(err.errors!=null){
+        console.log(err)
          let message=getErrorSchema(err);
          let err1=new Error( );
          err1.res=new ErrorCustome(message,"admin",200)

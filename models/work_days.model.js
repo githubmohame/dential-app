@@ -48,15 +48,12 @@ const WorkDaysSchema=Schema({
         ref: 'admin' }
 });
 WorkDaysSchema.index({day:1,admin:true,"start.hour":true,"end.hour":true},{unique:true});
-WorkDaysSchema.post('save', function(error, doc, next) {
-    let err=new Error('');
-   
-    if (error.name === 'MongoError' && error.code === 11000) {
-        err.res=ErrorCustome("this time aready used","Work day schema 1",500)
-        
-    } else {
-        err.res=ErrorCustome(err.message,"Work day schema 2",500)
-      next(err);
+WorkDaysSchema.pre("save",function(next){
+    if(this.start.hour-this.end.hour<=0){
+        let err1=new Error();
+        err1.res=new ErrorCustome("the time not valid")
+        next(err1);
     }
-  });
+});
 const WerkDays=model("WerkDays",WorkDaysSchema);
+0
