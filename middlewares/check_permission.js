@@ -1,3 +1,1 @@
-export function CheckPermission(req,res,next){
-    
-}
+export function CheckPermission(req, res, next) {}

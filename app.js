@@ -25,6 +25,8 @@ app.use("/",adminRouter);
 function errorHandler (err, req, res, next) {
     //console.log(err.message);
     //console.log(err.res);
+    //console.log(err.message);
+    //console.log(err.res);
     res.status(err.res.status);
     res.send({error:err.res.msgUser});
     //res.send({error:""});

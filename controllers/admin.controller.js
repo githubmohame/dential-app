@@ -17,12 +17,14 @@ class AdminController{
    }
      async getAdminByEmail(email){
       return await  new this.adminRepos(this.admin,this.next).getAdminByEmail(email);
-   }
+  
+     }
   async deleteAdmin(email){
     return await  new this.adminRepos(this.admin,this.next).deleteAdmin(email);
   }
   async updateAdmin(email,map1){
     return await new this.adminRepos(this.admin,this.next). updateAdmin(email,map1);
   }
+
  }
  export default AdminController;

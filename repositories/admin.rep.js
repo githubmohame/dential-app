@@ -39,6 +39,7 @@ class AdminRepos{
     }
     async  addAdmin(email,password,name ,phone){
         
+        
             let admin=await new this.Admin({email:email,password:password,name:name,phone:phone});
           
           let err=   admin.validateSync();
@@ -58,13 +59,27 @@ class AdminRepos{
              console.log(e);
              this.next(e);
              return;
+           return;
+          }
+          try{
+            await  admin.save();
+             console.log("kkiuui");
+          }
+          catch(e){
+             console.log(e);
+             this.next(e);
+             return;
           }
         return {error:0,"res":"the admin created"}
     }
     async  updateAdmin(email,map1){
         let t=await this.Admin.find({email:email});
         console.log(t);
+        console.log(t);
         let err=await this.Admin.updateOne({email:email},map1,{ runValidators: true });
+        //console.log(err);
+        if(err.errors!=null){
+        console.log(err)
         //console.log(err);
         if(err.errors!=null){
         console.log(err)
@@ -78,4 +93,5 @@ class AdminRepos{
     }
 }
 
+}
 export default AdminRepos;

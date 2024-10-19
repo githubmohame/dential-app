@@ -46,20 +46,27 @@ const AdminSchema=Schema({
 });
 AdminSchema.pre("save",async function(next){
   console.log(";;;;yuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu;;;;;;;;")
+  console.log(";;;;yuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu;;;;;;;;")
   let u=await Admin.find({email:this.email});
   if(u.length){
     let err1=new Error();
    err1.res=new ErrorCustome("this email is already used","",200);
+   err1.res=new ErrorCustome("this email is already used","",200);
     next(err1);
+    return;
     return;
   }
   u=await Admin.find({phone:this.phone});
 
+
   if(u.length){
+    
     
     let err1=new Error();
    err1.res=new ErrorCustome("this phone is already used","",200);
+   err1.res=new ErrorCustome("this phone is already used","",200);
     next(err1);
+    return;
     return;
   }
   try {
@@ -70,10 +77,14 @@ AdminSchema.pre("save",async function(next){
             let err1=new Error();
             err1.res=new ErrorClass("user message error","admin message error",500)
     return next(err1);
+     
+            //err1.res=new ErrorClass("user message error","admin message error",500)
+   // return next(err1);
   }
 
 });
 
 let Admin=model("Admins",AdminSchema)
 export default Admin;
+ 
  

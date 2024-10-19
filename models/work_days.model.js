@@ -53,7 +53,14 @@ WorkDaysSchema.pre("save",function(next){
         let err1=new Error();
         err1.res=new ErrorCustome("the time not valid")
         next(err1);
+WorkDaysSchema.pre("save",function(next){
+    if(this.start.hour-this.end.hour<=0){
+        let err1=new Error();
+        err1.res=new ErrorCustome("the time not valid")
+        next(err1);
     }
 });
+});
 const WerkDays=model("WerkDays",WorkDaysSchema);
+0
 0
