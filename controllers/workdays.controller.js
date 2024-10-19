@@ -5,7 +5,7 @@ class WorkDaysController {
     this.workDays = workDays;
   }
   async addWorkDays(adminId, startHour, startMinute, endHour, endMinute, day) {
-    this.workDaysRepos(this.next, this.workDays).addWorkDay(
+    let result = await this.workDaysRepos(this.next, this.workDays).addWorkDay(
       adminId,
       startHour,
       startMinute,
@@ -13,6 +13,7 @@ class WorkDaysController {
       endMinute,
       day
     );
+    res.json(result);
   }
   async getWorkDays(workDaysId) {
     this.workDaysRepos(this.next, this.workDays).getWorkDay(workDaysId);

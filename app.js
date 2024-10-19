@@ -32,10 +32,11 @@ mongoose
       res.send({ error: err.res.msgUser });
       //res.send({error:""});
     }
+    const port = process.env.port || 5000;
     app.use(errorHandler);
-    app.listen(3000, () => {
-      console.log("tell me go");
-      logger.info("Server is running on port 3000");
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+      logger.info(`Server is running on port ${port}`);
     });
   })
   .catch((error) => {

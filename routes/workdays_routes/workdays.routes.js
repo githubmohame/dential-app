@@ -1,14 +1,14 @@
 import { Router } from "express";
-
 function WorkDaysFunc(workDays, workDaysRepos, WorkDaysController) {
   const route = Router();
-  route.get("", async (req, res, next) => {
-    WorkDaysController(workDaysRepos, next, workDays).getWorkDay(
+  route.get("/workdays", async (req, res, next) => {
+    WorkDaysController(workDaysRepos, next, workDays).getWorkDays(
       req.header["id"]
     );
   });
-  route.post("/", async (req, res, next) => {
-    WorkDaysController(workDaysRepos, next, workDays).addWorkDay(
+  route.post("/workdays", async (req, res, next) => {
+    let adminId = req.body.adminId || req.headers.adminId;
+    WorkDaysController(workDaysRepos, next, workDays).addWorkDays(
       adminId,
       req.body.startHour,
       req.body.startMinute,
@@ -17,15 +17,17 @@ function WorkDaysFunc(workDays, workDaysRepos, WorkDaysController) {
       req.body.day
     );
   });
-  route.delete("/", async (req, res, next) => {
-    WorkDaysController(workDaysRepos, next, workDays).deleteWorkDay(
+
+  route.delete("/workdays", async (req, res, next) => {
+    WorkDaysController(workDaysRepos, next, workDays).deleteWorkDays(
       req.headers.workDaysId
     );
   });
-  route.update("/", async (req, res, next) => {
-    WorkDaysController(workDaysRepos, next, workDays).updateWorkDay(
+  route.put("/workdays", async (req, res, next) => {
+    WorkDaysController(workDaysRepos, next, workDays).updateWorkDays(
       req.headersworkDaysId,
       map
     );
   });
 }
+export default WorkDaysFunc;
