@@ -11,6 +11,10 @@ import UserRouterFun from "./routes/user_routes/user_routes.js";
 import mongoose from "mongoose";
 import logger from "./logger.js";
 import dotenv from "dotenv";
+import ServiceRouterFun from "./routes/service_routes/service_routes.js";
+import serviceModel from "./models/service.model.js";
+import ServiceController from "./controllers/serviceController.js";
+import ServiceRepo from "./repositories/serviceRepo.js";
 dotenv.config();
 mongoose
   .connect(process.env.CONNECTION_STRING, {})
@@ -19,12 +23,18 @@ mongoose
     logger.info("Connected to MongoDB");
     let userRouter = UserRouterFun(User, UserController, UserRepos);
     let adminRouter = AdminRouterFun(Admin, AdminController, AdminRepos);
+    let serviceRouter = ServiceRouterFun(
+      serviceModel,
+      ServiceController,
+      ServiceRepo
+    );
     const app = express();
     const upload = multer();
     app.use(upload.fields([]));
     app.use(express.json());
     app.use("/", userRouter);
     app.use("/", adminRouter);
+    app.use("/", serviceRouter);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
       logger.error(err.message);
@@ -32,10 +42,11 @@ mongoose
       res.send({ error: err.res.msgUser });
       //res.send({error:""});
     }
+    const port = process.env.port || 5000;
     app.use(errorHandler);
-    app.listen(3000, () => {
-      console.log("tell me go");
-      logger.info("Server is running on port 3000");
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+      logger.info(`Server is running on port ${port}`);
     });
   })
   .catch((error) => {
