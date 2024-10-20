@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
-
+import dotenv from "dotenv";
+dotenv.config();
 const pass = process.env.NODEMAILER_PASS;
 const email = process.env.NODEMAILER_EMAIL;
 
