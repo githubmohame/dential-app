@@ -66,7 +66,6 @@ mongoose
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
     logger.error("Error connecting to MongoDB:", error);
-<<<<<<< HEAD
   });
 
 //Error connecting to MongoDB: Error: querySrv ESERVFAIL _mongodb._tcp.reservationsystem.iww97.mongodb.net
