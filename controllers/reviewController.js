@@ -20,9 +20,9 @@ class ReviewController {
   }
 
   async postReview(req, res) {
-    const { user, service, review, rating } = req.body;
+    const { user, review, rating, title } = req.body;
     try {
-      await this.reviewRepo.addReview(user, service, review, rating);
+      await this.reviewRepo.addReview(user, title, review, rating);
       res.status(201).json({ message: "Review added successfully." });
     } catch (error) {
       console.error("Error in postReview:", error);

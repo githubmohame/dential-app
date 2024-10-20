@@ -13,17 +13,16 @@ class ReviewRepo {
     }
   }
 
-  // Add a new review
-  async addReview(user, title, reviewText, rating) {
-    const review = new this.Review({
+  async addReview(user, title, review, rating) {
+    const newReview = new this.Review({
       user,
       title,
-      review: reviewText,
+      review,
       rating,
     });
 
     try {
-      await review.save();
+      await newReview.save();
       console.log("Review added successfully.");
     } catch (error) {
       console.error("Error adding review:", error);
