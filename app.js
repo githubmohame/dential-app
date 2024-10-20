@@ -20,7 +20,7 @@ import Review from "./models/review.model.js";
 import ReviewRouterFun from "./routes/review_routes/review_routes.js";
 dotenv.config();
 mongoose
-  .connect("mongodb://127.0.0.1:27017/dentalDatabase", {})
+  .connect(process.env.CONNECTION_STRING, {}) //"mongodb://127.0.0.1:27017/dentalDatabase"
   .then(() => {
     console.log("Connected to MongoDB");
     logger.info("Connected to MongoDB");

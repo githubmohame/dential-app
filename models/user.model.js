@@ -49,7 +49,7 @@ const UserSchema = Schema({
     required: true,
   },
 });
-UserSchema.post("validate", async function (doc,next) {
+UserSchema.post("validate", async function (doc, next) {
   let u = await User.find({ email: doc.email });
   if (u.length) {
     let err1 = new Error();
@@ -82,10 +82,7 @@ UserSchema.post("validate", async function (doc,next) {
   new Error({});
 });
 
-<<<<<<< HEAD
-let User = model("Users", UserSchema);
-=======
 let User = model("User", UserSchema);
-User.findQuery=async function(query){};
->>>>>>> OmarKandil's-branch
+User.findQuery = async function (query) {};
+
 export default User;
