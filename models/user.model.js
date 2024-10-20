@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { genSalt, hash } from "bcrypt";
 import ErrorCustome from "../utilities/error.js";
+
 const UserSchema = Schema({
   name: {
     tell: [],
@@ -81,5 +82,10 @@ UserSchema.post("validate", async function (doc,next) {
   new Error({});
 });
 
+<<<<<<< HEAD
 let User = model("Users", UserSchema);
+=======
+let User = model("User", UserSchema);
+User.findQuery=async function(query){};
+>>>>>>> OmarKandil's-branch
 export default User;
