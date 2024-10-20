@@ -15,6 +15,8 @@ import ServiceRouterFun from "./routes/service_routes/service_routes.js";
 import serviceModel from "./models/service.model.js";
 import ServiceController from "./controllers/serviceController.js";
 import ServiceRepo from "./repositories/serviceRepo.js";
+import ReviewRouterFun from "./routes/review_routes/review_routes.js";
+import review from "./models/review.model.js";
 dotenv.config();
 mongoose
   .connect(process.env.CONNECTION_STRING, {})
@@ -28,6 +30,7 @@ mongoose
       ServiceController,
       ServiceRepo
     );
+    let reviewRouter = ReviewRouterFun(review);
     const app = express();
     const upload = multer();
     app.use(upload.fields([]));
@@ -35,6 +38,7 @@ mongoose
     app.use("/", userRouter);
     app.use("/", adminRouter);
     app.use("/", serviceRouter);
+    app.use("/", reviewRouter);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
       logger.error(err.message);
