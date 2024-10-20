@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import multer from "multer";
+import nodemailer from "nodemailer";
 import AdminController from "./controllers/admin.controller.js";
 import ServiceController from "./controllers/serviceController.js";
 import UserController from "./controllers/user.controller.js";
@@ -15,10 +16,9 @@ import UserRepos from "./repositories/user.rep.js";
 import AdminRouterFun from "./routes/admin_routes/admin.route.js";
 import ServiceRouterFun from "./routes/service_routes/service_routes.js";
 import UserRouterFun from "./routes/user_routes/user_routes.js";
-import nodemailer from "nodemailer"
 dotenv.config();
 mongoose
-  .connect("mongodb://127.0.0.1:27017/dentalDatabase", {})
+  .connect("mongodb+srv://omarKandil:Omar%401234%21@reservationsystem.iww97.mongodb.net/mydatabase?retryWrites=true&w=majority&ssl=true", {})
   .then(async() => {
     console.log("Connected to MongoDB");
     logger.info("Connected to MongoDB");
@@ -50,8 +50,8 @@ mongoose
       port: 465,
       secure: true,
       auth: {
-        user: "trialmailer206@gmail.com",
-        pass: "pdvfpsaooamwwrdh ",
+        user: process.env.TRAIL_MAIL,
+        pass: process.env.TRAIL_PASSWORD,
       },
     });
     const mailOptions = {
@@ -77,3 +77,5 @@ mongoose
     console.error("Error connecting to MongoDB:", error);
     logger.error("Error connecting to MongoDB:", error);
   });
+
+//Error connecting to MongoDB: Error: querySrv ESERVFAIL _mongodb._tcp.reservationsystem.iww97.mongodb.net
