@@ -29,6 +29,7 @@ class AdminRepos{
     }
     async deleteAdmin(email){
         let res=await this.Admin.deleteOne({email:email});
+        console.log(res);
         if(res.deletedCount==0){
             let err1=new Error( );
             err1.res=new ErrorCustome("admin not found","admin",400)
@@ -41,12 +42,14 @@ class AdminRepos{
         
         
             let admin=await new this.Admin({email:email,password:password,name:name,phone:phone});
-          
-          let err=   admin.validateSync();
-          console.log("tell me");``
+          //console.log(await this.Admin.find({email:email}))
+          let err=   await admin.validateSync();
+          //console.log(err);``
           if(err!=null){
            let message=getErrorSchema(err);
            let err1=new Error( );
+           console.log("tell me go");
+           console.log("hell");
            err1.res=new ErrorCustome(message,"admin",400)
            this.next(err1);
            return;
@@ -56,19 +59,8 @@ class AdminRepos{
              console.log("kkiuui");
           }
           catch(e){
-             console.log(e);
-             this.next(e);
-             return;
-           return;
-          }
-          try{
-            await  admin.save();
-             console.log("kkiuui");
-          }
-          catch(e){
-             console.log(e);
-             this.next(e);
-             return;
+            this.next(e);
+            return;
           }
         return {error:0,"res":"the admin created"}
     }
@@ -76,7 +68,13 @@ class AdminRepos{
         let t=await this.Admin.find({email:email});
         console.log(t);
         console.log(t);
-        let err=await this.Admin.updateOne({email:email},map1,{ runValidators: true });
+        let err=null;
+        try{
+            await this.Admin.updateOne({email:email},map1,{ runValidators: true });
+        }
+        catch(e){
+            err=e;
+        }
         //console.log(err);
         if(err.errors!=null){
         console.log(err)

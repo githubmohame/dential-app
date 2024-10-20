@@ -22,3 +22,4 @@ class WorkDaysController {
   }
 }
 // workDaysRepos(next,workDays).getWorkDay(req.header["id"],);
+export default WorkDaysController;

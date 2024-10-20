@@ -1,6 +1,6 @@
-import { Schema ,model, models} from "mongoose";
-import {ErrorCustome} from "../utilities/error.js"
-const TimeSchema=Schema({ hour:{
+import { Schema ,model} from "mongoose";
+import ErrorCustome from "../utilities/error.js";
+const TimeSchema=new Schema({ hour:{
     type:Number,
     required:true,
     validate: {
@@ -14,7 +14,7 @@ const TimeSchema=Schema({ hour:{
       }
 },
 mintue:{
-    type:TimeSchema,
+    type:Number,
     required:true,
     validate: {
         validator: function(v) {
@@ -26,8 +26,7 @@ mintue:{
         message: props => `the mintue should be between 0 and 59 `
       }
 }});
-
-const WorkDaysSchema=Schema({
+const WorkDaysSchema=new Schema({
     start:{
         type:TimeSchema,
         required:true,
@@ -47,20 +46,16 @@ const WorkDaysSchema=Schema({
         type: Schema.Types.ObjectId, 
         ref: 'admin' }
 });
+console.log(typeof WorkDaysSchema);
 WorkDaysSchema.index({day:1,admin:true,"start.hour":true,"end.hour":true},{unique:true});
 WorkDaysSchema.pre("save",function(next){
     if(this.start.hour-this.end.hour<=0){
         let err1=new Error();
         err1.res=new ErrorCustome("the time not valid")
         next(err1);
-WorkDaysSchema.pre("save",function(next){
-    if(this.start.hour-this.end.hour<=0){
-        let err1=new Error();
-        err1.res=new ErrorCustome("the time not valid")
-        next(err1);
-    }
+
+}
 });
-});
-const WerkDays=model("WerkDays",WorkDaysSchema);
-0
-0
+const WorkDays=model("WerkDays",WorkDaysSchema);
+
+export default WorkDays;

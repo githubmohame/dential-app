@@ -1,5 +1,6 @@
 import { Schema ,model} from "mongoose";
 import ErrorCustome from "../utilities/error.js";
+import { genSalt, hash } from "bcrypt";
 //
 const AdminSchema=Schema({
     name:{
@@ -44,29 +45,21 @@ const AdminSchema=Schema({
       required:true,
   }
 });
-AdminSchema.pre("save",async function(next){
-  console.log(";;;;yuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu;;;;;;;;")
-  console.log(";;;;yuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu;;;;;;;;")
-  let u=await Admin.find({email:this.email});
+AdminSchema.post("validate",async function(doc,next){
+  let u=await Admin.find({email:doc.email});
+  console.log(u);
+  console.log("********************************");
   if(u.length){
     let err1=new Error();
    err1.res=new ErrorCustome("this email is already used","",200);
-   err1.res=new ErrorCustome("this email is already used","",200);
     next(err1);
-    return;
     return;
   }
   u=await Admin.find({phone:this.phone});
-
-
-  if(u.length){
-    
-    
+  if(u.length){    
     let err1=new Error();
    err1.res=new ErrorCustome("this phone is already used","",200);
-   err1.res=new ErrorCustome("this phone is already used","",200);
     next(err1);
-    return;
     return;
   }
   try {
@@ -75,11 +68,9 @@ AdminSchema.pre("save",async function(next){
     this.password = hashedPassword;
           } catch (error) {
             let err1=new Error();
-            err1.res=new ErrorClass("user message error","admin message error",500)
+            console.log(error);
+            err1.res=new ErrorCustome("user message error","admin message error",500)
     return next(err1);
-     
-            //err1.res=new ErrorClass("user message error","admin message error",500)
-   // return next(err1);
   }
 
 });

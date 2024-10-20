@@ -30,10 +30,10 @@ function AdminRouterFun(admin,adminController,adminRepos){
        }
      
     });
-    AdminRouter.delete("/admin",function(req,res,next){
-     let result=new adminController(next,adminRepos,admin).deleteAdmin(req.headers.email);
+    AdminRouter.delete("/admin",async function(req,res,next){
+     let result=await new adminController(next,adminRepos,admin).deleteAdmin(req.headers.email);
     
-    
+      console.log(result)
      if(result){
         res.send({"res":"done"})
      }

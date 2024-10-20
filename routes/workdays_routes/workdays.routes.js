@@ -29,3 +29,4 @@ function WorkDaysFunc(workDays, workDaysRepos, WorkDaysController) {
     );
   });
 }
+export default WorkDaysFunc;

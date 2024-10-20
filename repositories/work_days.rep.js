@@ -33,3 +33,4 @@ class WorkDaysRepo {
     return records;
   }
 }
+export default WorkDaysRepo

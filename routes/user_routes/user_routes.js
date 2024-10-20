@@ -26,7 +26,7 @@ function UserRouterFun(User,UserController,userRepos){
      UserRouter.post("/user",async function(req,res,next){
         let result=await new UserController(next,userRepos,User).createUser(req.body.email,req.body.password,req.body.name,req.body.phone);
         if(result){
-         res.send({"tell":"iii"});
+         res.send({"res":"done"});
         }
       
      });
@@ -39,6 +39,7 @@ function UserRouterFun(User,UserController,userRepos){
      
      UserRouter.put("/user",async function(req,res,next){
       let result=await new UserController(next,userRepos,User).updateUser(req.headers.email,req.body,)
+      console.log(result)
      if(result){      
       res.send({"res":"done"});
      }
