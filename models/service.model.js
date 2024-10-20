@@ -1,5 +1,5 @@
 import { MaxKey } from "mongodb";
-import Schema, { model } from "mongoose";
+import { Schema, model } from "mongoose";
 import { validate } from "uuid";
 
 const ServiceSchema = Schema({
@@ -11,5 +11,5 @@ const ServiceSchema = Schema({
     type: Number,
   },
 });
-
-export default Service = model("Services", ServiceSchema);
+const Service = model("Services", ServiceSchema);
+export default Service;

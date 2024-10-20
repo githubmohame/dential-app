@@ -1,9 +1,9 @@
 import { Router } from "express";
-import ServiceController from "../controllers/serviceController.js";
+import ServiceController from "../../controllers/serviceController.js";
 
 export default function ServiceRouterFun(Service) {
   const router = Router();
-  const serviceController = new ServiceController(Service, next);
+  const serviceController = new ServiceController(Service);
 
   router.get("/services", async (req, res, next) => {
     try {
