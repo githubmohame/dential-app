@@ -1,21 +1,23 @@
 import dotenv from "dotenv";
 import express from "express";
-import Admin from "./models/admin.model.js"
-import AdminRepos from "./repositories/admin.rep.js"
+import Admin from "./models/admin.model.js";
+import AdminRepos from "./repositories/admin.rep.js";
 import AdminController from "./controllers/admin.controller.js";
 import ServiceController from "./controllers/serviceController.js";
 import UserController from "./controllers/user.controller.js";
 import UserRouterFun from "./routes/user_routes/user_routes.js";
 import mongoose from "mongoose";
-import AdminRouterFun from "./routes/admin_routes/admin.route.js"
-import User from "./models/user.model.js"
+import AdminRouterFun from "./routes/admin_routes/admin.route.js";
+import User from "./models/user.model.js";
 import logger from "./logger.js";
 import ServiceRouterFun from "./routes/service_routes/service_routes.js";
-import UserRepos from "./repositories/user.rep.js"
+import UserRepos from "./repositories/user.rep.js";
 import serviceModel from "./models/service.model.js";
 import ServiceRepo from "./repositories/serviceRepo.js";
-import nodemailer from "nodemailer"
+import nodemailer from "nodemailer";
 import multer from "multer";
+import Review from "./models/review.model.js";
+import ReviewRouterFun from "./routes/review_routes/review_routes.js";
 dotenv.config();
 mongoose
   .connect(process.env.CONNECTION_STRING, {})
@@ -29,6 +31,7 @@ mongoose
       ServiceController,
       ServiceRepo
     );
+    let reviewRouter = ReviewRouterFun(Review);
     const app = express();
     const upload = multer();
     app.use(upload.fields([]));
@@ -36,6 +39,7 @@ mongoose
     app.use("/", userRouter);
     app.use("/", adminRouter);
     app.use("/", serviceRouter);
+    app.use("/", reviewRouter);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
       logger.error(err.message);
@@ -44,14 +48,14 @@ mongoose
       //res.send({error:""});
     }
     const transporter = nodemailer.createTransport({
-      port: 465,               // true for 465, false for other ports
+      port: 465, // true for 465, false for other ports
       host: "smtp.gmail.com",
-         auth: {
-              user: process.env.TRAIL_MAIL,
-              pass:process.env.TRAIL_PASS,
-           },
+      auth: {
+        user: process.env.TRAIL_MAIL,
+        pass: process.env.TRAIL_PASS,
+      },
       secure: true,
-      });
+    });
     const port = process.env.port || 5000;
     app.use(errorHandler);
     app.listen(port, () => {
