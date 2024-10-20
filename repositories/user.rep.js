@@ -7,6 +7,7 @@ class UserRepos {
     this.User = User;
   }
   async getUserByEmail(email) {
+    console.log("tell me rr4433")
     console.log(email);
     let res = await this.User.find({ email: email });
     console.log(res);
@@ -33,7 +34,8 @@ class UserRepos {
   async deleteUser(email) {
     let res = await this.User.deleteOne({ email: email });
     if (res.deletedCount == 0) {
-      return { error: 0, res: "User not found" };
+      let err1;
+      this.next();
     }
     return { error: 1, msgErr: "the user deleted" };
   }
@@ -63,20 +65,31 @@ class UserRepos {
     return { error: 0, res: "the user created" };
   }
   async updateUser(email, map1) {
-    let err = await this.User.updateOne({ email: email }, map1, {
-      runValidators: true,
-    });
-    //let user=new this.User({...user1,...map1});
-
-    //let err=   user.validateSync();
-    if (err != null) {
-      let message = getErrorSchema(err);
-      let err1 = new Error();
-      err1.res = new ErrorCustome(message, "admin", 200);
-      await this.next(err1);
-      return;
+    let t=await this.User.find({email:email});
+    console.log(t);
+    console.log(t);
+    let err=null;
+    try{
+      await this.User.updateOne({email:email},map1,{ runValidators: true });
+      return {"res":"done"}
     }
-    return { error: 0, res: "the user update" };
+    catch(e){
+        //console.log(e.errors);
+        err=e
+    }
+    //console.log(err);
+    if(err.errors!=null){
+    //console.log(err)
+    //console.log(err);
+    
+    //console.log(err)
+     let message=getErrorSchema(err);
+     let err1=new Error( );
+     err1.res=new ErrorCustome(message,"user",200)
+     await this.next(err1);
+     return;
+    }
+    return {error:0,"res":"the user update"}
   }
 }
 

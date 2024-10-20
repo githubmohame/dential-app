@@ -49,8 +49,8 @@ const UserSchema = Schema({
     required: true,
   },
 });
-UserSchema.pre("save", async function (next) {
-  let u = await User.find({ email: this.email });
+UserSchema.post("validate", async function (doc,next) {
+  let u = await User.find({ email: doc.email });
   if (u.length) {
     let err1 = new Error();
     err1.res = new ErrorCustome(
@@ -60,7 +60,7 @@ UserSchema.pre("save", async function (next) {
     );
     next(err1);
   }
-  u = await User.find({ phone: this.phone });
+  u = await User.find({ phone: doc.phone });
   if (u.length) {
     let err1 = new Error();
     err1.res = new ErrorCustome(
@@ -79,19 +79,13 @@ UserSchema.pre("save", async function (next) {
       Error(new ErrorClass("user message error", "admin message error", 300))
     );
   }
-  try {
-    const salt = await genSalt(10);
-    let hashedPassword = await hash(this.password, salt);
-    this.password = hashedPassword;
-  } catch (error) {
-    console.log(error.res);
-    return next(
-      Error(new ErrorClass("user message error", "admin message error", 300))
-    );
-  }
   new Error({});
 });
 
+<<<<<<< HEAD
+let User = model("Users", UserSchema);
+=======
 let User = model("User", UserSchema);
 User.findQuery=async function(query){};
+>>>>>>> OmarKandil's-branch
 export default User;

@@ -20,7 +20,7 @@ import Review from "./models/review.model.js";
 import ReviewRouterFun from "./routes/review_routes/review_routes.js";
 dotenv.config();
 mongoose
-  .connect(process.env.CONNECTION_STRING, {})
+  .connect("mongodb://127.0.0.1:27017/dentalDatabase", {})
   .then(() => {
     console.log("Connected to MongoDB");
     logger.info("Connected to MongoDB");
@@ -58,14 +58,15 @@ mongoose
     });
     const port = process.env.port || 5000;
     app.use(errorHandler);
-    app.listen(port, () => {
-      console.log(`Server is running on port ${port}`);
-      logger.info(`Server is running on port ${port}`);
+    app.listen(3000, () => {
+      console.log("tell me go");
+      logger.info("Server is running on port 3000");
     });
   })
   .catch((error) => {
     console.error("Error connecting to MongoDB:", error);
     logger.error("Error connecting to MongoDB:", error);
+<<<<<<< HEAD
   });
 
 //Error connecting to MongoDB: Error: querySrv ESERVFAIL _mongodb._tcp.reservationsystem.iww97.mongodb.net

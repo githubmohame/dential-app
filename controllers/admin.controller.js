@@ -1,28 +1,30 @@
-class AdminController {
-  constructor(next, adminRepos, admin) {
-    this.next = next;
-    this.adminRepos = adminRepos;
-    this.admin = admin;
+class AdminController{
+    constructor(next,adminRepos,admin){
+       this.next = next;
+       this.adminRepos = adminRepos;
+       this.admin = admin;
+    }
+     async createAdmin(email,password,name ,phone){
+ 
+      try{
+       return await new this.adminRepos(this.admin,this.next).addAdmin(email,password,name ,phone);
+      }
+      catch(e){
+      }
+     }
+     async getAdminById(id){
+     return await new this.adminRepos(this.admin,this.next).getAdminById(id);
+   }
+     async getAdminByEmail(email){
+      return await  new this.adminRepos(this.admin,this.next).getAdminByEmail(email);
+  
+     }
+  async deleteAdmin(email){
+    return await  new this.adminRepos(this.admin,this.next).deleteAdmin(email);
   }
-  async createAdmin(email, password, name, phone) {
-    try {
-      new this.adminRepos(this.admin, this.next).addAdmin(
-        email,
-        password,
-        name,
-        phone
-      );
-      res.send({ msg: "admin created" });
-    } catch (e) {}
+  async updateAdmin(email,map1){
+    return await new this.adminRepos(this.admin,this.next). updateAdmin(email,map1);
   }
-  async getAdmin(email) {
-    new this.adminRepos(this.user, this.next).getAdminByEmail(email);
-  }
-  async deleteAdmin(email) {
-    new this.adminRepos(this.user, this.next).deleteAdmin(email);
-  }
-  async updateAdmin(email, req) {
-    new this.adminRepos(this.user, this.next).updateUser(email, req.body);
-  }
-}
-export default AdminController;
+
+ }
+ export default AdminController;
