@@ -1,36 +1,48 @@
+import ErrorCustome from "../utilities/error.js";
+import WorkDays from "../models/work_days.model.js";
 class WorkDaysRepo {
-  constructor(next, workDays) {
-    this.next = next;
-    this.workDays = workDays;
+  constructor() {
+    this.WorkDays = WorkDays;
   }
-  async addWorkDay(adminId, startHour, startMinute, endHour, endMinute, day) {
-    let workDays = new this.workDays({
-      start: { hour: startHour, minute: startMinute },
-      end: { hour: endHour, minute: endMinute },
-      day: day,
-    });
-    let err = workDays.validateSync();
-    if (err != null) {
-      let message = getErrorSchema(err);
-      let err1 = new Error();
-      err1.res = new ErrorCustome(message, "admin", 400);
-      this.next(err1);
-      return;
+
+  async getWorkDays() {
+    try {
+      const workDays = await this.WorkDays.find();
+      if (workDays.length === 0) {
+        throw new ErrorCustome("No workdays found.", "WorkDaysRepo", 404);
+      }
+      return workDays;
+    } catch (error) {
+      console.error("Error fetching workdays:", error);
+      throw new ErrorCustome("Error fetching workdays.", "WorkDaysRepo", 500);
     }
-    workDays.save();
-    return { error: 0, res: "the time add" };
   }
-  async getWorkDay(workDaysId) {
-    let records = await this.workDays.find({ __id: workDaysId });
-    return records;
-  }
-  async deleteWorkDay(workDaysId) {
-    let records = await this.workDays.delete({ __id: workDaysId });
-    return records;
-  }
-  async updateWorkDay(workDaysId, map) {
-    let records = await this.workDays.update({ __id: workDaysId }, map);
-    return records;
+
+  async updateWorkDay(key, value) {
+    try {
+      const update = {};
+      update[key] = value;
+
+      const updatedWorkDay = await this.WorkDays.findOneAndUpdate(
+        { [key]: { $ne: value } },
+        update,
+        { new: true, runValidators: true }
+      );
+
+      if (!updatedWorkDay) {
+        throw new ErrorCustome(
+          "Workday not found or no changes made.",
+          "WorkDaysRepo",
+          404
+        );
+      }
+
+      return updatedWorkDay;
+    } catch (error) {
+      console.error("Error updating workdays:", error);
+      throw new ErrorCustome("Error updating workdays.", "WorkDaysRepo", 500);
+    }
   }
 }
-export default WorkDaysRepo
+
+export default WorkDaysRepo;
