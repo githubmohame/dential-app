@@ -11,6 +11,8 @@
   "author": "MohamedAymanSoliman",
   "license": "ISC",
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
+    "axios": "^1.7.7",
     "bcrypt": "^5.1.1",
     "dotenv": "^16.4.5",
     "express": "^4.21.1",
@@ -19,6 +21,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
     "paseto": "^3.1.4",
+    "stripe": "^17.2.1",
     "uuid": "^10.0.0",
     "winston": "^3.15.0"
   },
