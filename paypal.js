@@ -1,100 +1,138 @@
-/* edit: refactored into module type using gpt, included comments as well
-MAKE SURE TO USE IMPORTS/EXPORTS TO MATCH THE MODULE TYPE
-IMPORTANT WE NEED TO USE DIFFERENT PAYPAL_CLIENT_ID AND PAYPAL SECRET, WE CAN USE THOSE BUT THE PAYPMENT WILL FAIL BECAUSE ACCOUNT GOT BANNED FOR SOME REASON
-
-
- PAYPAL_CLIENT_ID=
+/* IMPORTANT WE NEED TO USE DIFFERENT PAYPAL_CLIENT_ID AND PAYPAL SECRET, WE CAN USE THOSE BUT THE PAYPMENT WILL FAIL BECAUSE ACCOUNT GOT BANNED FOR SOME REASON
+PAYPAL_CLIENT_ID=
 PAYPAL_SECRET=
 PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com
 BASE_URL=http://localhost:3000
-
 */
-import axios from "axios";
+const axios = require("axios");
 
-// Function to generate PayPal access token
-export async function generateAccessToken() {
+async function generateAccessToken() {
   try {
-    // Make a request to PayPal's OAuth endpoint to get the access token
     const response = await axios({
-      url: `${process.env.PAYPAL_BASE_URL}/v1/oauth2/token`,
+      url: `${process.env.PAYPAL_BASE_URL}/v1/oauth2/token`, // Corrected template literal
       method: "post",
-      data: "grant_type=client_credentials", // Required payload to get access token
+      data: "grant_type=client_credentials",
       auth: {
-        // PayPal credentials from environment variables
         username: process.env.PAYPAL_CLIENT_ID,
         password: process.env.PAYPAL_SECRET,
       },
     });
 
-    // Log the access token to verify successful retrieval
+    // Log the access token
     console.log("Access Token:", response.data.access_token);
-    return response.data.access_token; // Return the access token for further API requests
+    return response.data.access_token; // Return the access token for later use
   } catch (error) {
-    // Log the error if there's a problem with getting the token
     console.error(
       "Error generating access token:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Rethrow the error for higher-level handling
+    throw error; // Rethrow the error if needed
   }
 }
 
-// Function to create an order with dynamic items and amounts
-export async function createOrder(items, totalCost) {
+exports.createOrder = async () => {
   try {
-    // Generate access token before making the order request
+    // Get the access token from the function you have for authentication
     const accessToken = await generateAccessToken();
 
     // Make the POST request to PayPal's order creation API
     const response = await axios({
-      url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders`, // PayPal's orders endpoint
+      url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders`, // Corrected template literal
       method: "post",
       headers: {
-        "Content-Type": "application/json", // Set content type to JSON
-        Authorization: `Bearer ${accessToken}`, // Include the access token for authorization
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`, // Corrected template literal and added space
       },
-      // Order data, now with dynamic items and cost
-      data: JSON.stringify({
-        intent: "CAPTURE", // The payment intent, specifying that funds will be captured immediately
+      data: {
+        intent: "CAPTURE", // Define the intent of the payment
         purchase_units: [
           {
-            items: items, // Dynamically passed items array
+            items: [
+              {
+                name: "Node.js Complete Course", // Name of the item
+                description: "Node.js Complete Course with Express and MongoDB", // Description of the item
+                quantity: 1, // Quantity of the item
+                unit_amount: {
+                  currency_code: "USD", // Currency
+                  value: "100.00", // Price per unit
+                },
+              },
+            ],
             amount: {
-              currency_code: "USD", // Set currency, this could be dynamic too
-              value: totalCost, // Dynamically passed total cost
+              currency_code: "USD",
+              value: "100.00",
               breakdown: {
                 item_total: {
-                  currency_code: "USD", // Currency for items
-                  value: totalCost, // Total price of all items
+                  currency_code: "USD",
+                  value: "100.00",
                 },
               },
             },
           },
         ],
         application_context: {
-          return_url: `${process.env.BASE_URL}/complete-order`, // Set the return URL
-          cancel_url: `${process.env.BASE_URL}/cancel-order`, // Set the cancel URL
-          shipping_preference: "NO_SHIPPING", // Indicate no shipping is required
-          user_action: "PAY_NOW", // Prompt the user to pay immediately
-          brand_name: "EasyReserve.com", // Custom branding
+          return_url: `${process.env.BASE_URL}/complete-order`, // Corrected template literal
+          cancel_url: `${process.env.BASE_URL}/cancel-order`, // Corrected template literal
+          shipping_preference: "NO_SHIPPING",
+          user_action: "PAY_NOW",
+          brand_name: "EasyReserve.com",
         },
-      }),
+      },
     });
 
-    // Find the approval link from PayPal's response and return it
+    // Return the response from PayPal's API
     return response.data.links.find((link) => link.rel === "approve").href;
   } catch (error) {
-    // Log error details if something goes wrong
     console.error(
       "Error creating order:",
       error.response ? error.response.data : error.message
     );
     throw new Error("Could not create order");
   }
-}
+};
 
-// Function to capture payment for a specific order
-export async function capturePayment(orderId) {
+// Example usage to create an order
+this.createOrder().then((result) => console.log(result));
+
+exports.capturePayment = async (orderId) => {
+  try {
+    const accessToken = await generateAccessToken();
+    const response = await axios({
+      url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`, // Corrected template literal
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`, // Corrected template literal
+      },
+    });
+    return response.data;
+  } catch (error) {
+    // Enhanced logging to capture full response
+    console.error(
+      "Error capturing payment:",
+      error.response ? error.response.data : error.message
+    );
+    throw new Error(
+      "Failed to capture payment: " +
+        (error.response ? JSON.stringify(error.response.data) : error.message)
+    );
+  }
+};
+
+// Example items to be ordered
+const items = [
+  {
+    name: "Node.js Complete Course",
+    description: "Node.js Complete Course with Express and MongoDB",
+    quantity: 1,
+    unit_amount: {
+      currency_code: "USD",
+      value: "100.00", // Price per unit
+    },
+  },
+];
+
+exports.capturePayment = async (orderId) => {
   try {
     // Generate access token to authorize the capture request
     const accessToken = await generateAccessToken();
@@ -122,23 +160,7 @@ export async function capturePayment(orderId) {
         (error.response ? JSON.stringify(error.response.data) : error.message)
     );
   }
-}
-
-// Example call to createOrder, passing dynamic items and total cost
-createOrder(
-  [
-    {
-      name: "Node.js Complete Course", // Example item name
-      description: "Node.js Complete Course with Express and MongoDB", // Example description
-      quantity: 1, // Quantity of the item
-      unit_amount: {
-        currency_code: "USD", // Currency code
-        value: "100.00", // Price per unit
-      },
-    },
-  ],
-  "100.00" // Total cost
-).then((result) => console.log(result));
+};
 
 //  the payment api is mostly ready but we need another email for paypal sandbox, because for some reason trialmailer no longer works.
 // here is the rest of the implementation logic
