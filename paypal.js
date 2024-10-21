@@ -4,12 +4,12 @@ PAYPAL_SECRET=
 PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com
 BASE_URL=http://localhost:3000
 */
-const axios = require("axios");
+import axios from "axios";
 
 async function generateAccessToken() {
   try {
     const response = await axios({
-      url: `${process.env.PAYPAL_BASE_URL}/v1/oauth2/token`, // Corrected template literal
+      url: `${process.env.PAYPAL_BASE_URL}/v1/oauth2/token`,
       method: "post",
       data: "grant_type=client_credentials",
       auth: {
@@ -18,26 +18,22 @@ async function generateAccessToken() {
       },
     });
 
-    // Log the access token
-    console.log("Access Token:", response.data.access_token);
     return response.data.access_token; // Return the access token for later use
   } catch (error) {
     console.error(
       "Error generating access token:",
       error.response ? error.response.data : error.message
     );
-    throw error; // Rethrow the error if needed
+    throw error;
   }
 }
 
-exports.createOrder = async () => {
+const createOrder = async (newitems, cost) => {
   try {
-    // Get the access token from the function you have for authentication
     const accessToken = await generateAccessToken();
 
-    // Make the POST request to PayPal's order creation API
     const response = await axios({
-      url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders`, // Corrected template literal
+      url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders`,
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -47,26 +43,21 @@ exports.createOrder = async () => {
         intent: "CAPTURE", // Define the intent of the payment
         purchase_units: [
           {
-            items: [
-              {
-                name: "Node.js Complete Course", // Name of the item
-                description: "Node.js Complete Course with Express and MongoDB", // Description of the item
-                quantity: 1, // Quantity of the item
-                unit_amount: {
-                  currency_code: "USD", // Currency
-                  value: "100.00", // Price per unit
-                },
-              },
-            ],
+            items: newitems,
+            // items: [
+            //   {
+            //     name: "Node.js Complete Course", // Name of the item
+            //     description: "Node.js Complete Course with Express and MongoDB", // Description of the item
+            //     quantity: 1, // Quantity of the item
+            //     unit_amount: {
+            //       currency_code: "USD", // Currency
+            //       value: "100.00", // Price per unit
+            //     },
+            //   },
+            // ],
             amount: {
               currency_code: "USD",
-              value: "100.00",
-              breakdown: {
-                item_total: {
-                  currency_code: "USD",
-                  value: "100.00",
-                },
-              },
+              value: `${cost}`,
             },
           },
         ],
@@ -92,47 +83,9 @@ exports.createOrder = async () => {
 };
 
 // Example usage to create an order
-this.createOrder().then((result) => console.log(result));
+// this.createOrder().then((result) => console.log(result));
 
-exports.capturePayment = async (orderId) => {
-  try {
-    const accessToken = await generateAccessToken();
-    const response = await axios({
-      url: `${process.env.PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`, // Corrected template literal
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`, // Corrected template literal
-      },
-    });
-    return response.data;
-  } catch (error) {
-    // Enhanced logging to capture full response
-    console.error(
-      "Error capturing payment:",
-      error.response ? error.response.data : error.message
-    );
-    throw new Error(
-      "Failed to capture payment: " +
-        (error.response ? JSON.stringify(error.response.data) : error.message)
-    );
-  }
-};
-
-// Example items to be ordered
-const items = [
-  {
-    name: "Node.js Complete Course",
-    description: "Node.js Complete Course with Express and MongoDB",
-    quantity: 1,
-    unit_amount: {
-      currency_code: "USD",
-      value: "100.00", // Price per unit
-    },
-  },
-];
-
-exports.capturePayment = async (orderId) => {
+const capturePayment = async (orderId) => {
   try {
     // Generate access token to authorize the capture request
     const accessToken = await generateAccessToken();
@@ -161,6 +114,8 @@ exports.capturePayment = async (orderId) => {
     );
   }
 };
+
+export { generateAccessToken, createOrder, capturePayment };
 
 //  the payment api is mostly ready but we need another email for paypal sandbox, because for some reason trialmailer no longer works.
 // here is the rest of the implementation logic
