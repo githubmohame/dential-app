@@ -21,12 +21,12 @@ class WorkDaysRepo {
   async updateWorkDay(key, value) {
     try {
       const update = {};
-      update[key] = value;
+      update[key] = value; //startWorkDay endWorkDay
 
       const updatedWorkDay = await this.WorkDays.findOneAndUpdate(
         { [key]: { $ne: value } },
         update,
-        { new: true, runValidators: true }
+        { runValidators: true }
       );
 
       if (!updatedWorkDay) {
