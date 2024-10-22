@@ -18,6 +18,9 @@ import nodemailer from "nodemailer";
 import multer from "multer";
 import Review from "./models/review.model.js";
 import ReviewRouterFun from "./routes/review_routes/review_routes.js";
+import WorkDaysFunc from "./routes/workdays_routes/workdays.routes.js";
+import WorkDaysController from "./controllers/workdays.controller.js";
+import appointmentRoutes from "./routes/appointment_routes/appointment_routes.js";
 dotenv.config();
 mongoose
   .connect(process.env.CONNECTION_STRING, {}) //"mongodb://127.0.0.1:27017/dentalDatabase"
@@ -32,6 +35,7 @@ mongoose
       ServiceRepo
     );
     let reviewRouter = ReviewRouterFun(Review);
+    let workdaysRouter = WorkDaysFunc(WorkDaysController);
     const app = express();
     const upload = multer();
     app.use(upload.fields([]));
@@ -40,6 +44,8 @@ mongoose
     app.use("/", adminRouter);
     app.use("/", serviceRouter);
     app.use("/", reviewRouter);
+    app.use("/", workdaysRouter);
+    app.use("/api", appointmentRoutes);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
       logger.error(err.message);
