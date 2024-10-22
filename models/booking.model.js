@@ -13,11 +13,6 @@ const bookingSchema = new mongoose.Schema( {
       ref: 'User',
       required: true
     },
-    admin: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Admin',
-      required: true
-    },
     service: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Service',
@@ -27,13 +22,12 @@ const bookingSchema = new mongoose.Schema( {
       type: Number,
       required: true
     },
-    duration: {
-      type: Number,
-      required: true  // Duration in minutes
-    },
 date :{
     type : String,
     required : true
-} 
+} ,
+note :{
+  type : String
+}
 })
     export const Booking = mongoose.model('Booking', bookingSchema);
