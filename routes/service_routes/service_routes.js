@@ -21,7 +21,7 @@ function ServiceRouterFun(Service,CustomePasetoMiddleWare, TokenController,userM
     }
   });
 
-  router.delete("/services/:name", async (req, res, next) => {
+  router.delete("/services/delete-service", async (req, res, next) => {
     try {
       await serviceController.deleteService(req, res);
     } catch (error) {
@@ -37,7 +37,7 @@ function ServiceRouterFun(Service,CustomePasetoMiddleWare, TokenController,userM
     }
   });
 
-  router.put("/services/:name/cost", async (req, res, next) => {
+  router.put("/services/update-service", async (req, res, next) => {
     try {
       await serviceController.updateServiceCost(req, res);
     } catch (error) {

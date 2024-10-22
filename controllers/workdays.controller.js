@@ -1,25 +1,31 @@
+import WorkDaysRepo from "../repositories/work_days.rep.js";
 class WorkDaysController {
-  constructor(workDaysRepos, workDays, next) {
-    this.workDaysRepos = workDaysRepos;
-    this.next = next;
-    this.workDays = workDays;
+  constructor() {
+    this.workDaysRepo = new WorkDaysRepo();
   }
-  async addWorkDays(adminId, startHour, startMinute, endHour, endMinute, day) {
-    this.workDaysRepos(this.next, this.workDays).addWorkDay(
-      adminId,
-      startHour,
-      startMinute,
-      endHour,
-      endMinute,
-      day
-    );
+
+  async getWorkDays(req, res) {
+    try {
+      const workDays = await this.workDaysRepo.getWorkDays();
+      res.status(200).json(workDays);
+    } catch (error) {
+      console.error("Error in getWorkDays:", error);
+      res.status(500).json({ message: "Error fetching workdays." });
+    }
   }
-  async getWorkDays(workDaysId) {
-    this.workDaysRepos(this.next, this.workDays).getWorkDay(workDaysId);
-  }
-  async deleteWorkDays(workDaysId) {
-    this.workDaysRepos(this.next, this.workDays).deleteWorkDay(workDaysId);
+
+  async updateWorkDay(req, res) {
+    const { key, value } = req.body; //key:ie startWorkDay, endWorkDay || value: the new day
+    try {
+      const updatedWorkDay = await this.workDaysRepo.updateWorkDay(key, value);
+      res
+        .status(200)
+        .json({ message: "Workday updated successfully.", updatedWorkDay });
+    } catch (error) {
+      console.error("Error in updateWorkDay:", error);
+      res.status(500).json({ message: "Error updating workdays." });
+    }
   }
 }
-// workDaysRepos(next,workDays).getWorkDay(req.header["id"],);
+
 export default WorkDaysController;
