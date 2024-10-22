@@ -55,11 +55,11 @@ export async function createAppointment(req, res) {
         "bookedTimes.day": day
       },
       {
-        $addToSet: { "bookedTimes.times": timeSlot } // Add the timeSlot to bookedTimes
+        $addToSet: { "bookedTimes.times": timeSlot } 
       },
       {
-        new: true, // Return the updated document
-        upsert: true // Create a new document if it doesn't exist
+        new: true, 
+        upsert: true 
       }
     );
 
