@@ -13,7 +13,7 @@ export async function findBookedTimes(year, month, day) {
   }
 }
 
-export async function createNewAppointment({ year, month, day, timeSlot, user, admin, service, cost, duration }) {
+export async function createNewAppointment({ year, month, day, timeSlot, user, service, cost,note}) {
   try {
     const newAppointment = new Appointment({
       months: {
@@ -23,7 +23,7 @@ export async function createNewAppointment({ year, month, day, timeSlot, user, a
           day: day,
           times: {
             timeSlot: timeSlot,
-            appointment: { user, admin, service, cost, duration }
+            appointment: { user, service, cost, date: `${year}-${month}-${day}-${timeSlot}`, note }
           }
         }
       },
@@ -37,7 +37,7 @@ export async function createNewAppointment({ year, month, day, timeSlot, user, a
         
        const nappointment =  await newAppointment.save();
        const appointmentId = nappointment._id;
-       const newbooking = new Booking({ appointmentId,user, admin, service, cost, duration, date: `${year}-${month}-${day}-${timeSlot}` })
+       const newbooking = new Booking({ appointmentId,user, service, cost, date: `${year}-${month}-${day}-${timeSlot}`, note })
         await newbooking.save();
         return nappointment
        
@@ -62,7 +62,7 @@ export async function checkTimeConflict(year, month, day, timeSlot) {
 
 
 
-export async function findAllAppointments(year, month, day) {
+export async function findAllAppointmentsByDay(year, month, day) {
   try {
     return await Appointment.find({
       "months.year": year,
@@ -72,6 +72,12 @@ export async function findAllAppointments(year, month, day) {
   } catch (error) {
     throw new Error('Error fetching appointments: ' + error.message);
   }
+}
+export async function findAllAppointmentsByMonth(year, month) {
+  return await Appointment.find({
+    "bookedTimes.year": year,
+    "bookedTimes.month": month
+  });
 }
 
 
