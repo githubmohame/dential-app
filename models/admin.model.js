@@ -1,6 +1,6 @@
-import { Schema ,model} from "mongoose";
-import ErrorCustome from "../utilities/error.js";
 import { genSalt, hash } from "bcrypt";
+import { Schema, model } from "mongoose";
+import ErrorCustome from "../utilities/error.js";
 //
 const AdminSchema=Schema({
     name:{
@@ -46,6 +46,7 @@ const AdminSchema=Schema({
   }
 });
 AdminSchema.post("validate",async function(doc,next){
+  console.log("tell me go878")
   let u=await Admin.find({email:doc.email});
   console.log(u);
   console.log("********************************");
@@ -62,19 +63,23 @@ AdminSchema.post("validate",async function(doc,next){
     next(err1);
     return;
   }
+ 
+});
+AdminSchema.pre('save',async function(next) {
   try {
     const salt = await genSalt(10);
     let hashedPassword = await hash(this.password, salt);
     this.password = hashedPassword;
+    console.log(this.password);
           } catch (error) {
+            console.log(error)
             let err1=new Error();
             console.log(error);
             err1.res=new ErrorCustome("user message error","admin message error",500)
     return next(err1);
   }
 
-});
-
+})
 let Admin=model("Admins",AdminSchema)
 export default Admin;
  

@@ -76,10 +76,9 @@ class AdminRepos{
             err=e;
         }
         //console.log(err);
-        if(err.errors!=null){
-        console.log(err)
+      
         //console.log(err);
-        if(err.errors!=null){
+        if(err&&err.errors!=null){
         console.log(err)
          let message=getErrorSchema(err);
          let err1=new Error( );
@@ -88,7 +87,6 @@ class AdminRepos{
          return;
         }
         return {error:0,"res":"the admin update"}
-    }
 }
 
 }

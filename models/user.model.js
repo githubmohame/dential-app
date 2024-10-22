@@ -70,22 +70,23 @@ UserSchema.post("validate", async function (doc,next) {
     );
     next(err1);
   }
+ 
+});
+UserSchema.pre('save',async function(next) {
   try {
     const salt = await genSalt(10);
     let hashedPassword = await hash(this.password, salt);
     this.password = hashedPassword;
-  } catch (error) {
-    return next(
-      Error(new ErrorClass("user message error", "admin message error", 300))
-    );
+    console.log(this.password);
+          } catch (error) {
+            console.log(error)
+            let err1=new Error();
+            console.log(error);
+            err1.res=new ErrorCustome("user message error","admin message error",500)
+    return next(err1);
   }
-  new Error({});
-});
 
-<<<<<<< HEAD
-let User = model("Users", UserSchema);
-=======
+})
 let User = model("User", UserSchema);
 User.findQuery=async function(query){};
->>>>>>> OmarKandil's-branch
 export default User;

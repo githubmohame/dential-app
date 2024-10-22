@@ -5,12 +5,11 @@ class UserRepos {
   constructor(User, next) {
     this.next = next;
     this.User = User;
+    console.log("hjhyyyyyrrggggtrrr");
   }
   async getUserByEmail(email) {
-    console.log("tell me rr4433")
-    console.log(email);
-    let res = await this.User.find({ email: email });
-    console.log(res);
+    let res = await this.User.findOne({ email: email });
+    console.log("kkiii");
     if (res) {
       return res;
       //return ;

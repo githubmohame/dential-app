@@ -1,23 +1,40 @@
-import { encryptPaseto } from "../../utilities/pasoto_utilities";
+import ErrorCustome from "../utilities/error.js";
+
 export class TokenController {
-  constructor(userRepos, adminRepos) {
-    this.userRepos = userRepos;
-    this.adminRepos = adminRepos;
+  constructor(userModel, adminModel,tokenRepos,tokenModel,next) {
+    this.userModel = userModel;
+    this.adminModel = adminModel;
+    this.tokenRepos = tokenRepos;
+    this.tokenModel=tokenModel
+    this.next = next;
   }
-  async createToken() {
-    let res1 = userRepos().getUserByEmail(req.headers["email"]);
-    let res2 = adminRepos().getAdminByEmail(req.headers["email"]);
-    if (res1.error || res2.error) {
-      let user = res1["res"];
-      if (user == null) {
-        user = res2;
-      }
-      let ret1 = await encryptPaseto();
-      ret1.key;
-      ret1.paseto;
-      pasetoRepos.id = user;
-      pasetoRepos.token = ret1.paseto;
-      return pasetoRepos.createPaseto(key);
+  async createTokenByEmail(email) {
+    console.log("9999999");
+    let res1 = await this.userModel.findOne({email:email});
+    if(!res1){
+      res1=await this.adminModel.findOne({email:email});
+    }  
+    console.log("hyyyyy");
+    if(!res1){
+      let err1=new Error();
+      err1.res=new ErrorCustome("the user not found","",500);
+      this.next(err1);
+      return;
     }
+    console.log(this.tokenModel);
+    let token=await new this.tokenRepos(this.userModel,this.tokenModel ,this.adminModel,this.next).addToken(res1._id);
+    return token;
+    }
+  async createTokenByRefresh(token) {
+    let user=await new this.tokenRepos(this.userModel,this.tokenModel ,this.adminModel,next).getPasetoUser(token);
+    let tokennew=await new this.tokenRepos(this.userModel,this.tokenModel ,adminModel,this.next).addToken(user.tokenModel._id);
+    return tokennew;
+    //let res1 = userRepos().getUserByEmail();
+    //let res2 = adminRepos().getAdminByEmail(req.headers["email"]);
+  }
+  async getPasetoUser(token){
+    let user=await new this.tokenRepos(this.userModel,this.tokenModel,this.adminModel,this.next).getPasetoUser(token);
+    return user;
   }
 }
+// constructor(userModel,TokenModel = null, token = null,adminModel,next)

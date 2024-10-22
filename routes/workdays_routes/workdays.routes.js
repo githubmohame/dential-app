@@ -3,6 +3,7 @@ import { Router } from "express";
 function WorkDaysFunc(workDays, workDaysRepos, WorkDaysController) {
   const route = Router();
   route.get("", async (req, res, next) => {
+    console.log("o9999kkkii")
     WorkDaysController(workDaysRepos, next, workDays).getWorkDay(
       req.header["id"]
     );
@@ -22,11 +23,12 @@ function WorkDaysFunc(workDays, workDaysRepos, WorkDaysController) {
       req.headers.workDaysId
     );
   });
-  route.update("/", async (req, res, next) => {
+  route.put("/", async (req, res, next) => {
     WorkDaysController(workDaysRepos, next, workDays).updateWorkDay(
       req.headersworkDaysId,
       map
     );
   });
+  return route;
 }
 export default WorkDaysFunc;

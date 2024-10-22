@@ -8,7 +8,6 @@ class UserController {
   }
   async getUserByEmail(email) {
     return await new this.userRepos(this.user, this.next).getUserByEmail(email);
-    console.log(this.user);
   }
   async getUserById(id) {
     return await new this.userRepos(this.user, this.next).getUserById(id);
@@ -22,7 +21,6 @@ class UserController {
         phone
       );
     } catch (e) {
-      console.log(e.message);
     }
   }
   async deleteUser(email) {
