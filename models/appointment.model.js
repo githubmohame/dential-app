@@ -26,11 +26,6 @@ const appointmentSchema = new mongoose.Schema({
             ref: 'User',
             required: true
           },
-          admin: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Admin',
-            required: true
-          },
           service: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Service',
@@ -40,17 +35,20 @@ const appointmentSchema = new mongoose.Schema({
             type: Number,
             required: true
           },
-          duration: {
-            type: Number,
-            required: true  // Duration in minutes
-          }
+          date :{
+              type : String,
+              required : true
+          },
+          note :{
+            type : String
+        }
         }
       }
     }
   },
   bookedTimes: {
     year: {
-      type: Number,  // Added the year field in bookedTimes
+      type: Number,  
       required: true
     },
     month: {
@@ -62,7 +60,7 @@ const appointmentSchema = new mongoose.Schema({
       required: true
     },
     times: {
-      type: [String],  // Array of time slots
+      type: [String],  
       required: true
     }
   }
