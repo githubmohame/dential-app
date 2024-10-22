@@ -58,6 +58,12 @@ const createOrder = async (newitems, cost) => {
             amount: {
               currency_code: "USD",
               value: `${cost}`,
+              breakdown: {
+                item_total: {
+                  currency_code: "USD",
+                  value: `${cost}`, // Ensure the item total matches the sum of item prices
+                },
+              },
             },
           },
         ],

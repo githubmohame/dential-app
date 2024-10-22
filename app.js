@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import express from "express";
+import cors from "cors";
 import Admin from "./models/admin.model.js";
 import AdminRepos from "./repositories/admin.rep.js";
 import AdminController from "./controllers/admin.controller.js";
@@ -21,12 +22,14 @@ import ReviewRouterFun from "./routes/review_routes/review_routes.js";
 import WorkDaysFunc from "./routes/workdays_routes/workdays.routes.js";
 import WorkDaysController from "./controllers/workdays.controller.js";
 import appointmentRoutes from "./routes/appointment_routes/appointment_routes.js";
+import paypalRouter from "./routes/paypal.routes.js/paypal.routes.js";
 dotenv.config();
 mongoose
   .connect(process.env.CONNECTION_STRING, {}) //"mongodb://127.0.0.1:27017/dentalDatabase"
   .then(() => {
     console.log("Connected to MongoDB");
     logger.info("Connected to MongoDB");
+    let PayPalRouter = paypalRouter;
     let userRouter = UserRouterFun(User, UserController, UserRepos);
     let adminRouter = AdminRouterFun(Admin, AdminController, AdminRepos);
     let serviceRouter = ServiceRouterFun(
@@ -37,6 +40,12 @@ mongoose
     let reviewRouter = ReviewRouterFun(Review);
     let workdaysRouter = WorkDaysFunc(WorkDaysController);
     const app = express();
+    app.use(
+      cors({
+        origin: "http://localhost:5173", // Adjust based on where your React app is running
+        credentials: true, // Include credentials if needed (e.g., cookies)
+      })
+    );
     const upload = multer();
     app.use(upload.fields([]));
     app.use(express.json());
@@ -46,6 +55,7 @@ mongoose
     app.use("/", reviewRouter);
     app.use("/", workdaysRouter);
     app.use("/api", appointmentRoutes);
+    app.use("/paypal", PayPalRouter);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
       logger.error(err.message);
