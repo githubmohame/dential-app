@@ -1,17 +1,17 @@
 import { Appointment } from '../models/appointment.model.js';
 import { findBookedTimes, createNewAppointment, checkTimeConflict } from '../repositories/appointment.rep.js';
-import { findAllAppointments } from '../repositories/appointment.rep.js';
+import { findAllAppointmentsByDay,findAllAppointmentsByMonth } from '../repositories/appointment.rep.js';
 import { getUserAppointments } from '../repositories/appointment.rep.js';
 import { deleteAppointmentById } from '../repositories/appointment.rep.js';
 
 
 
 
-export async function getAllAppointments(req, res) {
+export async function getAllAppointmentsDay(req, res) {
   const { year, month, day } = req.params;
 
   try {
-    const appointments = await findAllAppointments(year, month, day);
+    const appointments = await findAllAppointmentsByDay(year, month, day);
 
     if (!appointments || appointments.length === 0) {
       return res.status(404).json({ message: 'No appointments found for the specified day.' });
@@ -28,10 +28,31 @@ export async function getAllAppointments(req, res) {
   }
 }
 
+export async function getAllAppointmentsMonth(req, res) {
+  const { year, month } = req.params;
+
+  try {
+    const appointments = await findAllAppointmentsByMonth(year, month);
+
+    if (!appointments || appointments.length === 0) {
+      return res.status(404).json({ message: 'No appointments found for the specified month.' });
+    }
+
+    res.status(200).json({
+      message: 'All appointments for the specified month.',
+      appointments: appointments
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+}
+
 
 
 export async function createAppointment(req, res) {
-  const { year, month, day, timeSlot, user, admin, service, cost, duration } = req.body;
+  const { year, month, day, timeSlot, user, service, cost, note } = req.body;
 
   try {
     if (!allPossibleTimeSlots.includes(timeSlot)) {
@@ -45,7 +66,7 @@ export async function createAppointment(req, res) {
     }
 
     const newAppointment = await createNewAppointment({
-      year, month, day, timeSlot, user, admin, service, cost, duration
+      year, month, day, timeSlot, user,service, cost, duration
     });
 
     const updatedAppointment = await Appointment.findOneAndUpdate(
@@ -55,11 +76,11 @@ export async function createAppointment(req, res) {
         "bookedTimes.day": day
       },
       {
-        $addToSet: { "bookedTimes.times": timeSlot } 
+        $addToSet: { "bookedTimes.times": timeSlot } // Add the timeSlot to bookedTimes
       },
       {
-        new: true, 
-        upsert: true 
+        new: true, // Return the updated document
+        upsert: true // Create a new document if it doesn't exist
       }
     );
 
