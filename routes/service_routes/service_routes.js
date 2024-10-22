@@ -1,18 +1,10 @@
 import { Router } from "express";
 import ServiceController from "../../controllers/serviceController.js";
 
-function ServiceRouterFun(Service,CustomePasetoMiddleWare, TokenController,userModel, adminModel,tokenRepos,CheckPermission) {
-  console.log(CheckPermission)
-  const router = Router({ strict: true });
-  router.use(async(req,res,next)=>{
-    
-    CustomePasetoMiddleWare(req, res, next, TokenController,userModel, adminModel,tokenRepos)
-  })
-  router.use(async(req,res,next)=>{
-    
-    CheckPermission(req, res, next);
-  });
+export default function ServiceRouterFun(Service) {
+  const router = Router();
   const serviceController = new ServiceController(Service);
+
   router.get("/services", async (req, res, next) => {
     try {
       await serviceController.getAllServices(req, res);
@@ -47,4 +39,3 @@ function ServiceRouterFun(Service,CustomePasetoMiddleWare, TokenController,userM
 
   return router;
 }
-export default ServiceRouterFun;
