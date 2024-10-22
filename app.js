@@ -45,7 +45,7 @@ mongoose
     app.use("/", serviceRouter);
     app.use("/", reviewRouter);
     app.use("/", workdaysRouter);
-    app.use('/api', appointmentRoutes);
+    app.use("/api", appointmentRoutes);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
       logger.error(err.message);
