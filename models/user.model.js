@@ -12,7 +12,7 @@ const UserSchema=Schema({
         validate:{
             validator: function(v) {
               //throw new Error('Need to get a Turbo Man for Christmas');
-                return /^[a-zA-Z]+$/.test(v);
+                return /^[a-zA-Z ]+$/.test(v);
               },
               message:function(prop){
                 return "it is not a valid name";
@@ -50,6 +50,7 @@ const UserSchema=Schema({
 });
 UserSchema.pre("save",async function(next){
   let u=await User.find({email:this.email});
+  console
   if(u.length){
     let err1=new Error();
     err1.res=new ErrorCustome("this email is already used","admin message",500);

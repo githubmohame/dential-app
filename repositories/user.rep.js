@@ -1,5 +1,6 @@
 import ErrorCustome from "../utilities/error.js";
 import getErrorSchema from "../utilities/get_errors_schema.js";
+import Token from "../models/token.model.js";
 //import User from "../models/user.model.js";
 class UserRepos {
   constructor(User, next) {
@@ -31,7 +32,9 @@ class UserRepos {
     return;
   }
   async deleteUser(email) {
+    let user=await this.User.find({ email: email });
     let res = await this.User.deleteOne({ email: email });
+    await Token.deleteMany({user:user._id});
     if (res.deletedCount == 0) {
       let err1;
       this.next();

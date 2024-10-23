@@ -1,10 +1,25 @@
 import { Router } from "express";
 
 //import User from "../../models/user.model.js";
-function UserRouterFun(User,UserController,userRepos){
+function UserRouterFun(User,UserController,userRepos,CustomePasetoMiddleWare,CheckPermission, TokenController, adminModel,tokenRepos){
     const UserRouter=Router();
+    UserRouter.post("/",async function(req,res,next){
+      let result=await new UserController(next,userRepos,User).createUser(req.body.email,req.body.password,req.body.name,req.body.phone);
+      if(result){
+       res.send({"res":"done"});
+      }
     
-    UserRouter.get("/user",async function(req,res,next){
+   });
+   UserRouter.use(async(req,res,next)=>{
+    
+      CustomePasetoMiddleWare(req, res, next, TokenController,User, adminModel,tokenRepos)
+    })
+    UserRouter.use(async(req,res,next)=>{
+      
+      CheckPermission(req, res, next);
+    });
+    //user
+    UserRouter.get("/",async function(req,res,next){
         try{
          let u;
          if(req.headers.id){
@@ -22,22 +37,17 @@ function UserRouterFun(User,UserController,userRepos){
          console.log(e.message);
         }
      });
-     
-     UserRouter.post("/user",async function(req,res,next){
-        let result=await new UserController(next,userRepos,User).createUser(req.body.email,req.body.password,req.body.name,req.body.phone);
-        if(result){
-         res.send({"res":"done"});
-        }
-      
-     });
-     UserRouter.delete("/user",function(req,res,next){
+     //both
+    
+     //user
+     UserRouter.delete("/",function(req,res,next){
       let result=new UserController(next,userRepos,User).deleteUser(req.headers.email);
       if(result){
          res.send({"res":"done"})
       }
      });
-     
-     UserRouter.put("/user",async function(req,res,next){
+     //user
+     UserRouter.put("/",async function(req,res,next){
       let result=await new UserController(next,userRepos,User).updateUser(req.headers.email,req.body,)
       console.log(result)
      if(result){      

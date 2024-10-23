@@ -1,8 +1,27 @@
 import { Router } from "express";
-function AdminRouterFun(admin,adminController,adminRepos){
+import Admin from "../../models/admin.model.js";
+function AdminRouterFun(admin,adminController,adminRepos,CustomePasetoMiddleWare,CheckPermission, TokenController,userModel,tokenRepos) {
    const AdminRouter=Router();
+   AdminRouter.post("/",async function(req,res,next){
+      console.log("loooooooooooooooo")
+      console.log("loooooooooooooooo")
+       let result=await new adminController(next,adminRepos,admin).createAdmin(req.body.email,req.body.password,req.body.name,req.body.phone);
+       if(result){
+        res.send({"tell":"iii"});
+       }
+     
+    });
+   AdminRouter.use(async(req,res,next)=>{
+    
+      CustomePasetoMiddleWare(req, res, next, TokenController,userModel, admin,tokenRepos)
+    })
+    AdminRouter.use(async(req,res,next)=>{
+      
+      CheckPermission(req, res, next);
+    });
+   //admin
    
-   AdminRouter.get("/admin",async function(req,res,next){
+   AdminRouter.get("/",async function(req,res,next){
        try{
         let u;
         if(req.headers.id){
@@ -20,7 +39,7 @@ function AdminRouterFun(admin,adminController,adminRepos){
         console.log(e.message);
        }
     });
-    
+    /*
     AdminRouter.post("/admin",async function(req,res,next){
       console.log("loooooooooooooooo")
       console.log("loooooooooooooooo")
@@ -29,7 +48,8 @@ function AdminRouterFun(admin,adminController,adminRepos){
         res.send({"tell":"iii"});
        }
      
-    });
+    });*/
+    /*
     AdminRouter.delete("/admin",async function(req,res,next){
      let result=await new adminController(next,adminRepos,admin).deleteAdmin(req.headers.email);
     
@@ -38,7 +58,8 @@ function AdminRouterFun(admin,adminController,adminRepos){
         res.send({"res":"done"})
      }
     });
-    
+    */
+   /*
     AdminRouter.put("/admin",async function(req,res,next){
       console.log(req.body.email)
      let result=await new adminController(next,adminRepos,admin).updateAdmin(req.headers.email,req.body,)
@@ -48,6 +69,7 @@ function AdminRouterFun(admin,adminController,adminRepos){
     }
    
     });
+    */
     return AdminRouter;
 }
 export default AdminRouterFun;

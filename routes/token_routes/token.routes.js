@@ -1,16 +1,19 @@
 import { Router } from "express";
 
-function TokenRouteFunc(userModel, adminModel,TokenRepos,TokenController,tokenModel,middleware,adminRepos,UserRepos){
-    const route=Router({ strict: true });
-    route.use(async(req,res,next)=>{
-       try{
-        await middleware(req,res,next,UserRepos,adminRepos,userModel,adminModel);
-       }
-       catch(e){
-
-       }
+function TokenRouteFunc(userModel, adminModel,TokenRepos,TokenController,tokenModel,BasicAuthMiddleware,adminRepos,userRepos){
+    const route=Router();
+    route.use((req,res,next)=>{
+        console.log("killer")
+        BasicAuthMiddleware(
+            req,
+            res,
+            next,
+            adminRepos,userRepos,
+            userModel,adminModel
+          );
     });
     route.post("/",async function(req,res,next){
+        console.log("")
         let result=null;
         console.log("heloow hhhyyy")
         if(req.headers["email"]){

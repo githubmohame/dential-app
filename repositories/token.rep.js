@@ -36,12 +36,13 @@ class TokenRepos {
       console.log(u);
       if(u.length>0){
         u=u[0];
+         u.type="admin"
       }
       else{
         u=null;
       }
       //findOne().populate("users");
-      u.type="admin"
+     
     }
     else if(u){
       u.type="user";

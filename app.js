@@ -20,32 +20,44 @@ import Review from "./models/review.model.js";
 import ReviewRouterFun from "./routes/review_routes/review_routes.js";
 import WorkDaysFunc from "./routes/workdays_routes/workdays.routes.js";
 import WorkDaysController from "./controllers/workdays.controller.js";
-import appointmentRoutes from "./routes/appointment_routes/appointment_routes.js";
+import AppointmentRoutes from "./routes/appointment_routes/appointment_routes.js";
+import CustomePasetoMiddleWare from "./middlewares/toke_verify.middleware.js";
+import TokenController from "./controllers/token.controller.js";
+import CheckPermission from "./middlewares/check_permission.js";
+import TokenRepos from "./repositories/token.rep.js";
+import TokenRouteFunc from "./routes/token_routes/token.routes.js";
+import { BasicAuthMiddleware } from "./middlewares/basic_auth_middleware.js";
+import Token from "./models/token.model.js";
+
 dotenv.config();
 mongoose
-  .connect(process.env.CONNECTION_STRING, {}) //"mongodb://127.0.0.1:27017/dentalDatabase"
+  .connect('mongodb://127.0.0.1:27017/dentalDatabase', {}) //"mongodb://127.0.0.1:27017/dentalDatabase"
   .then(() => {
     console.log("Connected to MongoDB");
     logger.info("Connected to MongoDB");
-    let userRouter = UserRouterFun(User, UserController, UserRepos);
-    let adminRouter = AdminRouterFun(Admin, AdminController, AdminRepos);
+    let userRouter = UserRouterFun(User, UserController, UserRepos,CustomePasetoMiddleWare,CheckPermission,TokenController,Admin,TokenRepos);
+    let adminRouter = AdminRouterFun(Admin, AdminController, AdminRepos,CustomePasetoMiddleWare,CheckPermission,TokenController,User,TokenRepos);
     let serviceRouter = ServiceRouterFun(
       serviceModel,
-      ServiceController,
-      ServiceRepo
+      CustomePasetoMiddleWare,CheckPermission,
+      TokenController,User,Admin,TokenRepos    
     );
-    let reviewRouter = ReviewRouterFun(Review);
-    let workdaysRouter = WorkDaysFunc(WorkDaysController);
+    let reviewRouter = ReviewRouterFun(Review,CustomePasetoMiddleWare,CheckPermission,TokenController,User,Admin,TokenRepos);
+    let workdaysRouter = WorkDaysFunc(WorkDaysController,CheckPermission,CheckPermission, TokenController,User,Admin,TokenRepos);
+    let tokenRoute=TokenRouteFunc(User, Admin,TokenRepos,TokenController,Token,BasicAuthMiddleware,AdminRepos,UserRepos);
+    let appointmentRoutes=AppointmentRoutes;
     const app = express();
     const upload = multer();
     app.use(upload.fields([]));
     app.use(express.json());
-    app.use("/", userRouter);
-    app.use("/", adminRouter);
-    app.use("/", serviceRouter);
-    app.use("/", reviewRouter);
-    app.use("/", workdaysRouter);
-    app.use("/api", appointmentRoutes);
+    app.use("/user", userRouter);
+    app.use("/admin", adminRouter);
+    app.use("/token",tokenRoute);
+    app.use("/services", serviceRouter);
+    app.use("/review", reviewRouter);
+    app.use("/workdays", workdaysRouter);
+    app.use("/appointments",appointmentRoutes)
+    //app.use("/", appointmentRoutes);
     function errorHandler(err, req, res, next) {
       console.log(err.message);
       logger.error(err.message);

@@ -8,7 +8,9 @@ export function TokenRoute(
 ) {
   const route = Router();
   route.use(verifyMiddleware);
-  route.get("createToken", async function (req, res) {});
+  route.get("createToken", async function (req, res) {
+    
+  });
 }
 /*
    this.id=id;

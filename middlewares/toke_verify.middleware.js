@@ -1,5 +1,5 @@
 import ErrorCustome from "../utilities/error.js";
-export async function CustomePasetoMiddleWare(req, res, next, TokenController,userModel, adminModel,tokenRepos,tokenModel) {
+export default async function CustomePasetoMiddleWare(req, res, next, TokenController,userModel, adminModel,tokenRepos,tokenModel) {
   console.log("uu776765543432fddee")
   let result=await  new TokenController(userModel, adminModel,tokenRepos,tokenModel,next).getPasetoUser(req.headers["token"]);
   if(result){

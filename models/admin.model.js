@@ -10,7 +10,7 @@ const AdminSchema=Schema({
         maxLength: [50,"the name is too long"],
         validate:{
             validator: function(v) {
-                return /^[a-zA-Z]+$/.test(v);
+                return /^[a-zA-Z ]+$/.test(v);
               },
               message:function(prop){
                 return "it is not a valid name";

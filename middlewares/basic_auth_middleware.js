@@ -42,13 +42,13 @@ export async function BasicAuthMiddleware(
   }
   let check =false;  
   try{
-     check=await compareAsync("991",user1.password );
+     check=await compareAsync(req.headers["password"],user1.password );
     }
     catch(e){
     }
     console.log(check);
     if(!check){
-      err1={}
+      let err1={}
       err1.res = new ErrorCustome(
         "the email or password is incorrect",
         "function BasicAuthMiddleware 1",

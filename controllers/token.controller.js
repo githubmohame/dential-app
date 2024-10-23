@@ -1,6 +1,6 @@
 import ErrorCustome from "../utilities/error.js";
 
-export class TokenController {
+export default class TokenController {
   constructor(userModel, adminModel,tokenRepos,tokenModel,next) {
     this.userModel = userModel;
     this.adminModel = adminModel;

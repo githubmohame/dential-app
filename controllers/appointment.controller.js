@@ -9,9 +9,9 @@ import { deleteAppointmentById } from '../repositories/appointment.rep.js';
 
 export async function getAllAppointmentsDay(req, res) {
   const { year, month, day } = req.params;
-
+  console.log(req.params)
   try {
-    const appointments = await findAllAppointmentsByDay(year, month, day);
+    const appointments = await findAllAppointmentsByDay(parseInt(year), parseInt(month), parseInt(day));
 
     if (!appointments || appointments.length === 0) {
       return res.status(404).json({ message: 'No appointments found for the specified day.' });
@@ -137,7 +137,10 @@ export async function getAvailableTimes(req, res) {
 
 
 export async function getUserAppointmentsController(req, res) {
-  const { userId } = req.params;  
+  let { userId } = req.params;  
+  console.log(userId);
+  console.log("&********************************")
+  userId=parseInt(userId)
   console.log('User ID:', userId); 
 
 
