@@ -29,19 +29,10 @@ import TokenRouteFunc from "./routes/token_routes/token.routes.js";
 import { BasicAuthMiddleware } from "./middlewares/basic_auth_middleware.js";
 import Token from "./models/token.model.js";
 
-dotenv.config();
-mongoose
-  .connect('mongodb://127.0.0.1:27017/dentalDatabase', {}) //"mongodb://127.0.0.1:27017/dentalDatabase"
-  .then(() => {
-    console.log("Connected to MongoDB");
-    logger.info("Connected to MongoDB");
-    let userRouter = UserRouterFun(User, UserController, UserRepos,CustomePasetoMiddleWare,CheckPermission,TokenController,Admin,TokenRepos);
-    let adminRouter = AdminRouterFun(Admin, AdminController, AdminRepos,CustomePasetoMiddleWare,CheckPermission,TokenController,User,TokenRepos);
-    let serviceRouter = ServiceRouterFun(
-      serviceModel,
-      CustomePasetoMiddleWare,CheckPermission,
-      TokenController,User,Admin,TokenRepos    
-    );
+mongoose.connect('mongodb://localhost/dentalDatabase', {
+})
+.then(() => {
+    console.log('Connected to MongoDB');
     let reviewRouter = ReviewRouterFun(Review,CustomePasetoMiddleWare,CheckPermission,TokenController,User,Admin,TokenRepos);
     let workdaysRouter = WorkDaysFunc(WorkDaysController,CheckPermission,CheckPermission, TokenController,User,Admin,TokenRepos);
     let tokenRoute=TokenRouteFunc(User, Admin,TokenRepos,TokenController,Token,BasicAuthMiddleware,AdminRepos,UserRepos);
@@ -57,33 +48,21 @@ mongoose
     app.use("/review", reviewRouter);
     app.use("/workdays", workdaysRouter);
     app.use("/appointments",appointmentRoutes)
-    //app.use("/", appointmentRoutes);
-    function errorHandler(err, req, res, next) {
-      console.log(err.message);
-      logger.error(err.message);
-      res.status(err.res.status);
-      res.send({ error: err.res.msgUser });
-      //res.send({error:""});
-    }
-    const transporter = nodemailer.createTransport({
-      port: 465, // true for 465, false for other ports
-      host: "smtp.gmail.com",
-      auth: {
-        user: process.env.TRAIL_MAIL,
-        pass: process.env.TRAIL_PASS,
-      },
-      secure: true,
-    });
-    const port = process.env.port || 5000;
-    app.use(errorHandler);
-    app.listen(3000, () => {
-      console.log("tell me go");
-      logger.info("Server is running on port 3000");
-    });
-  })
-  .catch((error) => {
-    console.error("Error connecting to MongoDB:", error);
-    logger.error("Error connecting to MongoDB:", error);
-  });
+function errorHandler (err, req, res, next) {
+    //console.log(err.message);
+    //console.log(err.res);
+    res.status(err.res.status);
+    res.send({error:err.res.msgUser});
+    //res.send({error:""});
+}
+app.use(errorHandler);
+app.listen(3000,()=>{
+    console.log("tell me go");
+   
+      
+});
+})
+.catch((error) => {
+    console.error('Error connecting to MongoDB:', error);
+});
 
-//Error connecting to MongoDB: Error: querySrv ESERVFAIL _mongodb._tcp.reservationsystem.iww97.mongodb.net
